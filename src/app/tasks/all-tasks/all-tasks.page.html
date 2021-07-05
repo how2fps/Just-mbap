@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      All Tasks
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">
+        All Tasks
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-button [routerLink]="['..', 'create']" class="ion-text-start">
+    New Task
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-button>
+  <ion-list *ngFor="let task of tasks$ | async">
+    <ion-item>
+      <ion-label>{{task.title}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
