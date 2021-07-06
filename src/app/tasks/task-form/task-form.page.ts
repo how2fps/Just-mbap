@@ -47,10 +47,13 @@ export class TaskFormPage implements OnInit {
           formValues.m.toString() +
           ':' +
           formValues.s.toString();
+        const date: Date = new Date(formValues.date);
+        date.setHours(12);
+
         const newTask: Task = {
           title: formValues.title,
           timeAllocated,
-          date: formValues.date,
+          date,
           description: formValues.description,
         };
         return this.taskService.createTask(newTask);

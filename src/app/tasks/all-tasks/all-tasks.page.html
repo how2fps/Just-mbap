@@ -7,7 +7,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+  <ion-text>
+    <h1>{{viewTitle}}</h1>
+  </ion-text>
+  <calendar [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
+    (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" class="calendar"
+    [showEventDetail]="false" formatMonthTitle="dd MMMM yyyy">
+  </calendar>
+  <ion-header style="margin-top:-100px;" collapse="condense">
     <ion-toolbar>
       <ion-title size="large">
         All Tasks
@@ -23,8 +30,5 @@
       <ion-label>{{task.title}}</ion-label>
     </ion-item>
   </ion-list>
-  <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
-    (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)"
-    (onTimeSelected)="onTimeSelected($event)" class="calendar" formatMonthTitle="MMMM" [showEventDetail]="false">
-  </calendar>
+
 </ion-content>

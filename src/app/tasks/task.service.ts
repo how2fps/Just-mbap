@@ -31,7 +31,26 @@ export class TaskService {
     );
   }
 
+  getTasksByDate(date: Date) {
+    return this.authService.currentUser$.pipe(
+      tap((user) => {
+        this.currentUserID = user.uid;
+      }),
+      switchMap((user) => {
+        const userID = user.uid;
+        this.tasksCollection = this.afs.collection<Task>('tasks', (ref) =>
+          ref.where('userID', '==', userID).where('date', '==', date)
+        );
+        return this.tasksCollection.valueChanges();
+      })
+    );
+  }
+
   createTask(task: Task) {
-    return this.tasksCollection.add({ ...task, userID: this.currentUserID });
+    return this.tasksCollection.add({
+      ...task,
+      userID: this.currentUserID,
+      date: new Date(task.date),
+    });
   }
 }
