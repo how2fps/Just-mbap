@@ -24,8 +24,7 @@ export class AuthService {
       } else {
         return null;
       }
-    }),
-    tap(() => console.log('hi'))
+    })
   );
 
   constructor(private fireAuth: AngularFireAuth, private router: Router) {}

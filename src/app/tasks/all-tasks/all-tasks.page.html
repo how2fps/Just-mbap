@@ -18,12 +18,13 @@
     New Task
     <ion-icon name="add-outline"></ion-icon>
   </ion-button>
-  <!-- <ion-list *ngFor="let task of tasks$ | async">
+  <ion-list *ngFor="let task of tasks$ | async">
     <ion-item>
       <ion-label>{{task.title}}</ion-label>
     </ion-item>
-  </ion-list> -->
-  <calendar>
-
+  </ion-list>
+  <calendar [eventSource]="eventSource" [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
+    (onEventSelected)="onEventSelected($event)" (onTitleChanged)="onViewTitleChanged($event)"
+    (onTimeSelected)="onTimeSelected($event)" class="calendar" formatMonthTitle="MMMM" [showEventDetail]="false">
   </calendar>
 </ion-content>
