@@ -5,6 +5,6 @@ export interface UserDetails {
 }
 
 export interface LoginDetails {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }

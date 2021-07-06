@@ -7,27 +7,35 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-text>
+  <ion-title>
     <h1>{{viewTitle}}</h1>
-  </ion-text>
-  <calendar [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
-    (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" class="calendar"
-    [showEventDetail]="false" formatMonthTitle="dd MMMM yyyy">
-  </calendar>
-  <ion-header style="margin-top:-100px;" collapse="condense">
+  </ion-title>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <calendar [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
+          (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" class="calendar"
+          [showEventDetail]="false" formatMonthTitle="MMMM yyyy"></calendar>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-button expand="block" [routerLink]="['..', 'create']" class="ion-text-start">
+    New Task
+  </ion-button>
+  <ion-header>
     <ion-toolbar>
-      <ion-title size="large">
-        All Tasks
+      <ion-title size="large" class="ion-text-center">
+        Tasks for {{selectedDate}}
       </ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-button [routerLink]="['..', 'create']" class="ion-text-start">
-    New Task
-    <ion-icon name="add-outline"></ion-icon>
-  </ion-button>
   <ion-list *ngFor="let task of tasks$ | async">
-    <ion-item>
-      <ion-label>{{task.title}}</ion-label>
+    <ion-item (click)="onTaskClick(task.id)">
+      <ion-label>
+        <h2>{{task.title}}</h2>
+        <h3>{{task.timeAllocated}}</h3>
+        <p>{{task.description}}</p>
+      </ion-label>
     </ion-item>
   </ion-list>
 

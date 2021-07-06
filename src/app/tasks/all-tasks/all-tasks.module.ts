@@ -9,11 +9,11 @@ import { NgCalendarModule } from 'ionic2-calendar';
 
 @NgModule({
   imports: [
+    NgCalendarModule,
     IonicModule,
     CommonModule,
     FormsModule,
     AllTasksPageRoutingModule,
-    NgCalendarModule,
   ],
   declarations: [AllTasksPage],
 })

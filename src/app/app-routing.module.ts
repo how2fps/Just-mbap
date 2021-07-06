@@ -57,7 +57,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'task-details',
+    path: 'task-details/:id',
     loadChildren: () =>
       import('./tasks/task-details/task-details.module').then(
         (m) => m.TaskDetailsPageModule

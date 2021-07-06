@@ -52,7 +52,16 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-button type="submit" expand="block">Create task</ion-button>
+      <ion-row>
+        <ion-col size="12">
+          <ion-item>
+            <ion-label>Visible to friends</ion-label>
+            <ion-checkbox formControlName="visibleToFriends"></ion-checkbox>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-button type="submit" expand="block" [disabled]="taskForm.invalid">{{taskForm.invalid ? 'Make sure all fields
+        are valid!' :'Create task'}}</ion-button>
     </ion-grid>
   </form>
 </ion-content>

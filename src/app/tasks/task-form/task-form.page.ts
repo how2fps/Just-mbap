@@ -30,6 +30,7 @@ export class TaskFormPage implements OnInit {
       s: new FormControl('', [Validators.required, Validators.max(59)]),
       date: new FormControl('', Validators.required),
       description: new FormControl('', Validators.required),
+      visibleToFriends: new FormControl(false, Validators.required),
     });
   }
 
@@ -49,12 +50,13 @@ export class TaskFormPage implements OnInit {
           formValues.s.toString();
         const date: Date = new Date(formValues.date);
         date.setHours(12);
-
         const newTask: Task = {
           title: formValues.title,
           timeAllocated,
           date,
           description: formValues.description,
+          visibleToFriends: formValues.visibleToFriends,
+          currentTask: false,
         };
         return this.taskService.createTask(newTask);
       })

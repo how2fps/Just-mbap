@@ -3,5 +3,8 @@ export interface Task {
   description: string;
   timeAllocated: string;
   title: string;
+  visibleToFriends: string;
+  currentTask: boolean;
+  id?: string;
   userID?: string;
 }
