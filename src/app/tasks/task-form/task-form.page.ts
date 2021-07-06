@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-task-form',
@@ -11,7 +12,11 @@ import { TaskService } from '../task.service';
 })
 export class TaskFormPage implements OnInit {
   taskForm: FormGroup;
-  constructor(private taskService: TaskService, private router: Router) {}
+  constructor(
+    private taskService: TaskService,
+    private loadingController: LoadingController,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.initForm();
@@ -29,21 +34,30 @@ export class TaskFormPage implements OnInit {
   }
 
   onSubmit() {
-    const formValues = this.taskForm.value;
-    const timeAllocated =
-      formValues['h'].toString() +
-      ':' +
-      formValues['m'].toString() +
-      ':' +
-      formValues['s'].toString();
-    const newTask: Task = {
-      title: formValues['title'],
-      timeAllocated: timeAllocated,
-      date: formValues['date'],
-      description: formValues['description'],
-    };
-    this.taskService.createTask(newTask).then(() => {
-      this.router.navigate(['/tasks', 'all']);
-    });
+    let loaderElement: HTMLIonLoadingElement;
+    this.loadingController
+      .create()
+      .then((loader) => {
+        loaderElement = loader;
+        loaderElement.present();
+        const formValues = this.taskForm.value;
+        const timeAllocated =
+          formValues.h.toString() +
+          ':' +
+          formValues.m.toString() +
+          ':' +
+          formValues.s.toString();
+        const newTask: Task = {
+          title: formValues.title,
+          timeAllocated,
+          date: formValues.date,
+          description: formValues.description,
+        };
+        return this.taskService.createTask(newTask);
+      })
+      .then(() => {
+        this.router.navigate(['/tasks', 'all']);
+        loaderElement.dismiss();
+      });
   }
 }

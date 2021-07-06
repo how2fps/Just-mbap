@@ -12,9 +12,9 @@ import { Task } from '../models/task.model';
   providedIn: 'root',
 })
 export class TaskService {
-  private tasksCollection: AngularFirestoreCollection<Task>;
-  currentUserID: string = '';
+  currentUserID: string;
   tasks$: Observable<Task[]>;
+  private tasksCollection: AngularFirestoreCollection<Task>;
 
   constructor(private afs: AngularFirestore, private authService: AuthService) {
     this.tasks$ = this.authService.currentUser$.pipe(
