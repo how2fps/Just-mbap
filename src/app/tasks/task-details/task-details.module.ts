@@ -7,14 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { TaskDetailsPageRoutingModule } from './task-details-routing.module';
 
 import { TaskDetailsPage } from './task-details.page';
+import { TimePipe } from 'src/app/pipes/time.pipe';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    TaskDetailsPageRoutingModule
+    TaskDetailsPageRoutingModule,
   ],
-  declarations: [TaskDetailsPage]
+  declarations: [TaskDetailsPage, TimePipe],
 })
 export class TaskDetailsPageModule {}

@@ -42,17 +42,13 @@ export class TaskFormPage implements OnInit {
         loaderElement = loader;
         loaderElement.present();
         const formValues = this.taskForm.value;
-        const timeAllocated =
-          formValues.h.toString() +
-          ':' +
-          formValues.m.toString() +
-          ':' +
-          formValues.s.toString();
+        const timeAllocatedInSeconds =
+          +formValues.h * 60 * 60 + +formValues.m * 60 + +formValues.s;
         const date: Date = new Date(formValues.date);
         date.setHours(12);
         const newTask: Task = {
           title: formValues.title,
-          timeAllocated,
+          timeAllocated: timeAllocatedInSeconds,
           date,
           description: formValues.description,
           visibleToFriends: formValues.visibleToFriends,

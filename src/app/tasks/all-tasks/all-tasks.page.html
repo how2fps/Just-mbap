@@ -33,10 +33,13 @@
     <ion-item (click)="onTaskClick(task.id)">
       <ion-label>
         <h2>{{task.title}}</h2>
-        <h3>{{task.timeAllocated}}</h3>
+        <h3>{{task.timeAllocated | time}}</h3>
         <p>{{task.description}}</p>
       </ion-label>
     </ion-item>
   </ion-list>
+  <ion-item *ngIf="(tasks$ | async)?.length === 0">
+    <p>No tasks yet!</p>
+  </ion-item>
 
 </ion-content>

@@ -11,17 +11,25 @@ import { TaskService } from '../task.service';
   styleUrls: ['./task-details.page.scss'],
 })
 export class TaskDetailsPage implements OnInit {
-  taskDetails$: Observable<Task>;
+  taskDetails: Task;
+  timeAllocated: number;
   constructor(
     private route: ActivatedRoute,
     private taskService: TaskService
   ) {}
 
   ngOnInit() {
-    this.taskDetails$ = this.route.paramMap.pipe(
-      map((paramMap) => paramMap.get('id')),
-      switchMap((id) => this.taskService.getTaskDetails(id)),
-      tap((result) => console.log(result))
-    );
+    this.route.paramMap
+      .pipe(
+        map((paramMap) => paramMap.get('id')),
+        switchMap((id) => this.taskService.getTaskDetails(id)),
+        tap((result) => {
+          this.taskDetails = result;
+          this.timeAllocated = result.timeAllocated;
+        })
+      )
+      .subscribe();
   }
+
+  startTimer() {}
 }

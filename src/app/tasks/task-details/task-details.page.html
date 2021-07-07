@@ -4,12 +4,15 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="taskDetails$ | async as taskDetails">
-  <ion-grid>
-    <ion-row>
-      <ion-col>
-        <h1>{{taskDetails.id}}</h1>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content *ngIf="taskDetails">
+  <ion-text class="ion-text-center">
+    <h1>{{taskDetails.title}}</h1>
+  </ion-text>
+  <ion-text class="ion-text-center">
+    <h1>{{taskDetails.description}}</h1>
+  </ion-text>
+  <ion-text class="ion-text-center">
+    <h1>Time allocated: {{timeAllocated | time}}</h1>
+  </ion-text>
+  <ion-button (click)="startTimer()">Start task</ion-button>
 </ion-content>
