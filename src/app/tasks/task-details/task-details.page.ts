@@ -4,8 +4,16 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import { ActivatedRoute } from '@angular/router';
+import { now, take } from 'lodash';
 import { Subject, timer } from 'rxjs';
-import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  first,
+  map,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
 
@@ -18,40 +26,27 @@ export class TaskDetailsPage implements OnInit {
   taskDetails: Task;
   timeAllocated: number;
   taskDoc: AngularFirestoreDocument<Task>;
-  timerRunning = false;
+  timerRunning: boolean;
   stopTimer$ = new Subject();
 
   constructor(
     private route: ActivatedRoute,
     private taskService: TaskService,
     private afs: AngularFirestore
-  ) {}
-
-  @HostListener('window:unload', ['$event'])
-  unloadHandler(event: BeforeUnloadEvent) {
-    window.sessionStorage.setItem(
-      'timeAllocated',
-      this.timeAllocated.toString()
-    );
-    window.sessionStorage.setItem('taskId', this.taskDetails.id);
-  }
-
-  ngOnInit() {
+  ) {
+    console.log('ngonint"');
     this.route.paramMap
       .pipe(
         map((paramMap) => paramMap.get('id')),
         switchMap((id) => this.taskService.getTaskDetails(id)),
         tap((result) => {
-          console.log('taskdetails emit');
           const taskId = window.sessionStorage.getItem('taskId');
           this.taskDetails = result;
           if (result.id === taskId) {
-            console.log('reached first');
             this.timeAllocated = Number(
               window.sessionStorage.getItem('timeAllocated')
             );
           } else {
-            console.log('reached second');
             this.timeAllocated = result.timeAllocated;
           }
           window.sessionStorage.clear();
@@ -62,6 +57,17 @@ export class TaskDetailsPage implements OnInit {
       )
       .subscribe();
   }
+
+  @HostListener('window:unload', ['$event'])
+  unloadHandler(event: BeforeUnloadEvent) {
+    window.sessionStorage.setItem(
+      'timeAllocated',
+      this.timeAllocated.toString()
+    );
+    window.sessionStorage.setItem('taskId', this.taskDetails.id);
+  }
+
+  ngOnInit() {}
 
   startTimer() {
     this.timerRunning = true;

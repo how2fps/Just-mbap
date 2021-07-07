@@ -45,11 +45,6 @@ const routes: Routes = [
       import('./profile/profile.module').then((m) => m.ProfilePageModule),
   },
   {
-    path: '',
-    redirectTo: 'tasks/all',
-    pathMatch: 'full',
-  },
-  {
     path: 'tasks/create',
     loadChildren: () =>
       import('./tasks/task-form/task-form.module').then(
@@ -63,11 +58,19 @@ const routes: Routes = [
         (m) => m.TaskDetailsPageModule
       ),
   },
+  {
+    path: '',
+    redirectTo: 'tasks/all',
+    pathMatch: 'full',
+  },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
+    RouterModule.forRoot(routes, {
+      preloadingStrategy: PreloadAllModules,
+      enableTracing: true,
+    }),
   ],
   exports: [RouterModule],
 })

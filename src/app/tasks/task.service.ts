@@ -4,9 +4,16 @@ import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import { map, switchMap, tap } from 'rxjs/operators';
+import {
+  distinctUntilChanged,
+  map,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root',
