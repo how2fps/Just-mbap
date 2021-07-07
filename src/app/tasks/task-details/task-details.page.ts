@@ -33,8 +33,18 @@ export class TaskDetailsPage implements OnInit {
     private route: ActivatedRoute,
     private taskService: TaskService,
     private afs: AngularFirestore
-  ) {
-    console.log('ngonint"');
+  ) {}
+
+  @HostListener('window:unload', ['$event'])
+  unloadHandler(event: BeforeUnloadEvent) {
+    window.sessionStorage.setItem(
+      'timeAllocated',
+      this.timeAllocated.toString()
+    );
+    window.sessionStorage.setItem('taskId', this.taskDetails.id);
+  }
+
+  ngOnInit() {
     this.route.paramMap
       .pipe(
         map((paramMap) => paramMap.get('id')),
@@ -57,17 +67,6 @@ export class TaskDetailsPage implements OnInit {
       )
       .subscribe();
   }
-
-  @HostListener('window:unload', ['$event'])
-  unloadHandler(event: BeforeUnloadEvent) {
-    window.sessionStorage.setItem(
-      'timeAllocated',
-      this.timeAllocated.toString()
-    );
-    window.sessionStorage.setItem('taskId', this.taskDetails.id);
-  }
-
-  ngOnInit() {}
 
   startTimer() {
     this.timerRunning = true;

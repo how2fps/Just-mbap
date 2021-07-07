@@ -8,7 +8,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./tabs.component.scss'],
 })
 export class TabsComponent implements OnInit {
-  showTabs: boolean = false;
+  showTabs = false;
   constructor(private authService: AuthService) {}
 
   ngOnInit() {

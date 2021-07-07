@@ -19,6 +19,7 @@ export class TaskFormPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log('ngOnInit');
     this.initForm();
   }
 

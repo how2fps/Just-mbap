@@ -17,7 +17,6 @@ import { TabsComponent } from './tabs/tabs.component';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    IonicModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],

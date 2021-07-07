@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
 
@@ -22,8 +22,7 @@ export class AllTasksPage implements OnInit {
   currentDate$ = new BehaviorSubject<Date>(new Date());
   currentDateSub: Subscription;
   calendar = {
-    mode: 'month',
-    currentDate: Date.now(),
+    currentDate: new Date(),
   };
 
   constructor(private taskService: TaskService, private router: Router) {
@@ -32,7 +31,9 @@ export class AllTasksPage implements OnInit {
     );
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('allTasksNgOnInit');
+  }
 
   onViewTitleChanged(title) {
     this.viewTitle = title;

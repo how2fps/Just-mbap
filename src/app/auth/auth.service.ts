@@ -52,8 +52,7 @@ export class AuthService {
         } else {
           return null;
         }
-      }),
-      tap((result) => console.log(result))
+      })
     );
   }
 

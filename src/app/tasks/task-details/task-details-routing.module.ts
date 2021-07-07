@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { SaveTimeGuard } from 'src/app/guards/save-time.guard';
-
+import { RouterModule, Routes } from '@angular/router';
 import { TaskDetailsPage } from './task-details.page';
+import { SaveTimeGuard } from 'src/app/guards/save-time.guard';
 
 const routes: Routes = [
   {

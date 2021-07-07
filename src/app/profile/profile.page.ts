@@ -9,7 +9,9 @@ import { AuthService } from '../auth/auth.service';
 export class ProfilePage implements OnInit {
   constructor(private authService: AuthService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('profileNgOnInit');
+  }
 
   logout() {
     this.authService.logout();

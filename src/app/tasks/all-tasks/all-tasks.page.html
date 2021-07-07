@@ -13,13 +13,13 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <calendar [calendarMode]="calendar.mode" [currentDate]="calendar.currentDate"
+        <calendar calendarMode="month" [currentDate]="calendar.currentDate"
           (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" class="calendar"
           [showEventDetail]="false" formatMonthTitle="MMMM yyyy"></calendar>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-button expand="block" [routerLink]="['..', 'create']" class="ion-text-start">
+  <ion-button type="button" expand="block" [routerLink]="['..', 'create']" class="ion-text-start">
     New Task
   </ion-button>
   <ion-header>
