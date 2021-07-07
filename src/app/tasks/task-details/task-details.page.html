@@ -14,5 +14,6 @@
   <ion-text class="ion-text-center">
     <h1>Time allocated: {{timeAllocated | time}}</h1>
   </ion-text>
-  <ion-button (click)="startTimer()">Start task</ion-button>
+  <ion-button (click)="timerRunning ? stopTimer() : startTimer()">{{timerRunning ? 'Pause Task' : 'Start Task'}}
+  </ion-button>
 </ion-content>

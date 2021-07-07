@@ -7,6 +7,7 @@ export class TimePipe implements PipeTransform {
   transform(value: number): string {
     let seconds = value.toString();
     let minutes = Math.floor(Number(seconds) / 60).toString();
+    console.log('minutes', minutes);
     let hours;
 
     if (Number(minutes) > 59) {
@@ -19,13 +20,13 @@ export class TimePipe implements PipeTransform {
     seconds = Math.floor(Number(seconds) % 60).toString();
     seconds = Number(seconds) >= 10 ? seconds : '0' + seconds;
 
-    if (!hours) {
+    if (!hours || hours === '0') {
       hours = '00';
     }
-    if (!minutes) {
+    if (!minutes || minutes === '0') {
       minutes = '00';
     }
-    if (!seconds) {
+    if (!seconds || seconds === '0') {
       seconds = '00';
     }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, pipe } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { interval, Observable, pipe, Subject, timer } from 'rxjs';
+import { map, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
 
@@ -13,6 +13,8 @@ import { TaskService } from '../task.service';
 export class TaskDetailsPage implements OnInit {
   taskDetails: Task;
   timeAllocated: number;
+  timerRunning: boolean = false;
+  stopTimer$ = new Subject();
   constructor(
     private route: ActivatedRoute,
     private taskService: TaskService
@@ -26,10 +28,28 @@ export class TaskDetailsPage implements OnInit {
         tap((result) => {
           this.taskDetails = result;
           this.timeAllocated = result.timeAllocated;
+          console.log(this.timeAllocated);
         })
       )
       .subscribe();
   }
 
-  startTimer() {}
+  startTimer() {
+    timer(0, 1000)
+      .pipe(
+        takeUntil(this.stopTimer$),
+        tap(() => {
+          if (this.timeAllocated === 0) {
+            this.stopTimer$.next();
+            return;
+          }
+          this.timeAllocated -= 1;
+        })
+      )
+      .subscribe();
+  }
+  stopTimer() {
+    this.timerRunning = false;
+    this.stopTimer$.next();
+  }
 }
