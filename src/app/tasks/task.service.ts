@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
+  AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
@@ -13,6 +14,7 @@ import { Task } from '../models/task.model';
 export class TaskService {
   currentUserID: string;
   private tasksCollection: AngularFirestoreCollection<Task>;
+  private task: AngularFirestoreDocument<Task>;
 
   constructor(
     private afs: AngularFirestore,
@@ -62,5 +64,9 @@ export class TaskService {
           return { id: docId, ...data };
         })
       );
+  }
+
+  updateTime(time: number, task: AngularFirestoreDocument<Task>) {
+    task.update({ timeAllocated: time });
   }
 }

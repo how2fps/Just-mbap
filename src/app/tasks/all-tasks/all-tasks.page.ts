@@ -28,8 +28,7 @@ export class AllTasksPage implements OnInit {
 
   constructor(private taskService: TaskService, private router: Router) {
     this.tasks$ = this.currentDate$.pipe(
-      switchMap((date) => this.taskService.getTasksByDate(date)),
-      tap((result) => console.log(result))
+      switchMap((date) => this.taskService.getTasksByDate(date))
     );
   }
 
