@@ -4,7 +4,8 @@ import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import {  map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';
 
@@ -13,8 +14,8 @@ import { Task } from '../models/task.model';
 })
 export class TaskService {
   currentUserID: string;
+  forceUpdate$ = new BehaviorSubject('');
   private tasksCollection: AngularFirestoreCollection<Task>;
-  private task: AngularFirestoreDocument<Task>;
 
   constructor(
     private afs: AngularFirestore,
@@ -50,20 +51,6 @@ export class TaskService {
       userID: this.currentUserID,
       date: new Date(task.date),
     });
-  }
-
-  getTaskDetails(id: string) {
-    return this.afs
-      .collection<Task>('tasks')
-      .doc(id)
-      .get()
-      .pipe(
-        map((actions) => {
-          const data = actions.data() as Task;
-          const docId = actions.id;
-          return { id: docId, ...data };
-        })
-      );
   }
 
   updateTime(time: number, task: AngularFirestoreDocument<Task>) {
@@ -112,6 +99,21 @@ export class TaskService {
         });
       })
     );
+  }
+
+  getTaskDetails(id: string) {
+    console.log('getTaskDetails running');
+    return this.afs
+      .collection<Task>('tasks')
+      .doc(id)
+      .get()
+      .pipe(
+        map((actions) => {
+          const data = actions.data() as Task;
+          const docId = actions.id;
+          return { id: docId, ...data };
+        })
+      );
   }
 
   getCurrentTask() {

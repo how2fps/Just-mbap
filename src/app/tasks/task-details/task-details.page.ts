@@ -44,8 +44,9 @@ export class TaskDetailsPage implements OnInit {
   }
 
   setCurrentTask() {
-    this.taskService
-      .updateTaskToCurrent(this.taskDetails.id)
-      .subscribe(() => this.router.navigate(['/tasks', 'current']));
+    this.taskService.updateTaskToCurrent(this.taskDetails.id).subscribe(() => {
+      this.router.navigate(['/tasks', 'current']);
+    });
+    this.taskService.forceUpdate$.next(this.taskDetails.id);
   }
 }

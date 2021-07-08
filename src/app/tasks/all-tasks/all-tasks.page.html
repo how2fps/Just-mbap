@@ -30,7 +30,7 @@
     </ion-toolbar>
   </ion-header>
   <ion-list *ngFor="let task of tasks$ | async">
-    <ion-item (click)="onTaskClick(task.id)">
+    <ion-item [color]="task.currentTask ? 'primary' : ''" (click)="onTaskClick(task.id)">
       <ion-label>
         <h2>{{task.title}}</h2>
         <h3 *ngIf="!task.currentTask">{{task.timeAllocated | time}}</h3>
