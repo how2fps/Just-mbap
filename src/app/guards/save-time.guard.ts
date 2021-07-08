@@ -6,7 +6,7 @@ import {
   UrlTree,
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { TaskDetailsPage } from '../tasks/task-details/task-details.page';
+import { CurrentTaskPage } from '../tasks/current-task/current-task.page';
 import { TaskService } from '../tasks/task.service';
 
 @Injectable({
@@ -15,7 +15,7 @@ import { TaskService } from '../tasks/task.service';
 export class SaveTimeGuard implements CanDeactivate<unknown> {
   constructor(private taskService: TaskService) {}
   canDeactivate(
-    component: TaskDetailsPage,
+    component: CurrentTaskPage,
     currentRoute: ActivatedRouteSnapshot,
     currentState: RouterStateSnapshot,
     nextState?: RouterStateSnapshot

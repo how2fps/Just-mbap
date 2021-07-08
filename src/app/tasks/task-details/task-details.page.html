@@ -17,7 +17,7 @@
     <ion-item>
       <ion-label position="stacked" class="label">Remaining time:</ion-label>
       <ion-text>
-        <h3 *ngIf="timeAllocated !>= 0">{{timeAllocated | time}}</h3>
+        <h3 *ngIf="taskDetails.timeAllocated >= 0">{{taskDetails.timeAllocated | time}}</h3>
       </ion-text>
     </ion-item>
   </ion-card>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { TaskService } from '../task.service';
   templateUrl: 'all-tasks.page.html',
   styleUrls: ['all-tasks.page.scss'],
 })
-export class AllTasksPage implements OnInit {
+export class AllTasksPage {
   eventSource = [];
   viewTitle: string;
   currentMonth: Date;
@@ -29,10 +29,6 @@ export class AllTasksPage implements OnInit {
     this.tasks$ = this.currentDate$.pipe(
       switchMap((date) => this.taskService.getTasksByDate(date))
     );
-  }
-
-  ngOnInit() {
-    console.log('allTasksNgOnInit');
   }
 
   onViewTitleChanged(title) {

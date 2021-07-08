@@ -16,7 +16,6 @@ import { TaskService } from '../task.service';
 })
 export class TaskDetailsPage implements OnInit {
   taskDetails: Task;
-  timeAllocated: number;
   taskDoc: AngularFirestoreDocument<Task>;
   timerRunning = false;
   stopTimer$ = new Subject();
@@ -44,5 +43,9 @@ export class TaskDetailsPage implements OnInit {
       .subscribe();
   }
 
-  setCurrentTask() {}
+  setCurrentTask() {
+    this.taskService
+      .updateTaskToCurrent(this.taskDetails.id)
+      .subscribe(() => this.router.navigate(['/tasks', 'current']));
+  }
 }

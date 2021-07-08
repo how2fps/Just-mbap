@@ -58,7 +58,6 @@ export class TaskService {
       .doc(id)
       .get()
       .pipe(
-        tap(() => console.log('getTaskDetails')),
         map((actions) => {
           const data = actions.data() as Task;
           const docId = actions.id;
