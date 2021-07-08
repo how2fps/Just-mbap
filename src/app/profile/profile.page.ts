@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { UserService } from './user.service';
 
 @Component({
   selector: 'app-profile',
@@ -7,10 +9,14 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-  constructor(private authService: AuthService) {}
+  userDetails$: Observable<any>;
+  constructor(
+    private authService: AuthService,
+    private userService: UserService
+  ) {}
 
   ngOnInit() {
-    console.log('profileNgOnInit');
+    this.userDetails$ = this.userService.getUserDetails$();
   }
 
   logout() {

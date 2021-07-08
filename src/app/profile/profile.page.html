@@ -4,6 +4,35 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-button type="button" color="danger" (click)="logout()">Logout</ion-button>
+<ion-content *ngIf="userDetails$ | async as userDetails" class="ion-padding">
+  <ion-text class="ion-text-center">
+    <h1></h1>
+  </ion-text>
+  <ion-card class="ion-padding">
+    <ion-item>
+      <ion-label position="stacked" class="label">Display name:</ion-label>
+      <ion-text>
+        <h3>{{userDetails.displayName}}</h3>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label">Status:</ion-label>
+      <ion-text>
+        <h3>{{userDetails.status}}</h3>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label">Highest streak:</ion-label>
+      <ion-text>
+        <h3>{{userDetails.highestStreak}}</h3>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label">Current streak:</ion-label>
+      <ion-text>
+        <h3>{{userDetails.currentStreak}}</h3>
+      </ion-text>
+    </ion-item>
+    <ion-button type="button" color="danger" (click)="logout()">Logout</ion-button>
+  </ion-card>
 </ion-content>

@@ -17,6 +17,7 @@ import { TaskService } from '../task.service';
 export class TaskDetailsPage implements OnInit {
   taskDetails: Task;
   taskDoc: AngularFirestoreDocument<Task>;
+  currentActiveTaskDoc: AngularFirestoreDocument<Task>;
   timerRunning = false;
   stopTimer$ = new Subject();
 
@@ -47,6 +48,21 @@ export class TaskDetailsPage implements OnInit {
     this.taskService.updateTaskToCurrent(this.taskDetails.id).subscribe(() => {
       this.router.navigate(['/tasks', 'current']);
     });
+    if (window.localStorage.getItem('timerRunning') === 'true') {
+      const taskId = window.localStorage.getItem('taskId');
+      const timeAllocated = Number(
+        window.localStorage.getItem('timeAllocated')
+      );
+      const timeOnLeave = Number(window.localStorage.getItem('timeOnLeave'));
+      const timeNeededToSubtract = Math.floor(
+        (Date.now() - timeOnLeave) / 1000
+      );
+      const updatedTime = timeAllocated - timeNeededToSubtract;
+      this.currentActiveTaskDoc = this.afs
+        .collection('tasks')
+        .doc<Task>(taskId);
+      this.taskService.updateTime(updatedTime, this.currentActiveTaskDoc);
+    }
     this.taskService.forceUpdate$.next(this.taskDetails.id);
   }
 }
