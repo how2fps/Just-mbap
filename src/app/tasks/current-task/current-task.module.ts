@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CurrentTaskPage } from './current-task.page';
 import { CurrentTaskPageRoutingModule } from './current-task-routing.module';
+import { TimePipeModule } from 'src/app/ngModules/time-pipe-module/time-pipe.module';
 
 @NgModule({
   imports: [
@@ -12,6 +13,7 @@ import { CurrentTaskPageRoutingModule } from './current-task-routing.module';
     CommonModule,
     FormsModule,
     CurrentTaskPageRoutingModule,
+    TimePipeModule,
   ],
   declarations: [CurrentTaskPage],
 })

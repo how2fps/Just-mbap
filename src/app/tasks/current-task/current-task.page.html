@@ -1,16 +1,35 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Current Task
     </ion-title>
   </ion-toolbar>
 </ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
+<ion-content *ngIf="taskDetails" class="ion-padding">
+  <ion-text class="ion-text-center">
+    <h1>{{taskDetails.title}}</h1>
+  </ion-text>
+  <ion-card class="ion-padding">
+    <ion-item>
+      <ion-label position="stacked" class="label">Description:</ion-label>
+      <ion-text>
+        <h3>{{taskDetails.description}}</h3>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label">Remaining time:</ion-label>
+      <ion-text>
+        <h3 *ngIf="timeAllocated !>= 0">{{timeAllocated | time}}</h3>
+      </ion-text>
+    </ion-item>
+  </ion-card>
+  <ion-button [color]="timerRunning? 'danger' : 'success'" class="ion-margin-top" expand="block" type="button"
+    (click)="timerRunning ? stopTimer() : startTimer()">
+    {{timerRunning ? 'Pause Task' : 'Start Task'}}
+  </ion-button>
+</ion-content>
+<ion-content *ngIf="!taskDetails">
+  <ion-text class="ion-text-center">
+    <h1>No current task, start a task to set it to your current task!</h1>
+  </ion-text>
 </ion-content>

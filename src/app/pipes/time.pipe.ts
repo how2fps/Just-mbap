@@ -18,7 +18,6 @@ export class TimePipe implements PipeTransform {
 
     seconds = Math.floor(Number(seconds) % 60).toString();
     seconds = Number(seconds) >= 10 ? seconds : '0' + seconds;
-
     if (!hours || hours === '0') {
       hours = '00';
     }

@@ -4,16 +4,9 @@ import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import {
-  distinctUntilChanged,
-  map,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
+import {  map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';
-import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root',
@@ -63,11 +56,12 @@ export class TaskService {
     return this.afs
       .collection<Task>('tasks')
       .doc(id)
-      .snapshotChanges()
+      .get()
       .pipe(
+        tap(() => console.log('getTaskDetails')),
         map((actions) => {
-          const data = actions.payload.data() as Task;
-          const docId = actions.payload.id;
+          const data = actions.data() as Task;
+          const docId = actions.id;
           return { id: docId, ...data };
         })
       );
@@ -75,5 +69,69 @@ export class TaskService {
 
   updateTime(time: number, task: AngularFirestoreDocument<Task>) {
     task.update({ timeAllocated: time });
+  }
+
+  updateTaskToCurrent(taskToCurrentId: string) {
+    const taskDoc = this.afs.collection('tasks').doc<Task>(taskToCurrentId);
+    return this.authService.currentUser$.pipe(
+      map((user) => user.uid),
+      switchMap((userID) =>
+        this.afs
+          .collection('tasks', (ref) =>
+            ref.where('userID', '==', userID).where('currentTask', '==', true)
+          )
+          .get()
+      ),
+      tap((currentTask) => {
+        let currentTaskId;
+        if (currentTask.empty) {
+          return taskDoc.update({ currentTask: true });
+        }
+        currentTask.forEach((task) => {
+          if (currentTask.docs.length > 1) {
+            return this.afs
+              .collection('tasks')
+              .doc<Task>(task.id)
+              .update({ currentTask: false });
+          }
+          currentTaskId = task.id;
+          if (currentTaskId === taskToCurrentId) {
+            return;
+          } else {
+            this.afs
+              .collection('tasks')
+              .doc<Task>(currentTaskId)
+              .update({ currentTask: false })
+              .then(() =>
+                this.afs
+                  .collection('tasks')
+                  .doc<Task>(taskToCurrentId)
+                  .update({ currentTask: true })
+              )
+              .catch((err) => console.log(err));
+          }
+        });
+      })
+    );
+  }
+
+  getCurrentTask() {
+    return this.authService.currentUser$.pipe(
+      map((user) => user.uid),
+      switchMap((userID) =>
+        this.afs
+          .collection('tasks', (ref) =>
+            ref.where('userID', '==', userID).where('currentTask', '==', true)
+          )
+          .get()
+      ),
+      map((result) => {
+        if (!result.empty) {
+          const id = result.docs[0].id;
+          const data = result.docs[0].data() as Task;
+          return { ...data, id };
+        }
+      })
+    );
   }
 }

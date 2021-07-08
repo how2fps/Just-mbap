@@ -33,7 +33,8 @@
     <ion-item (click)="onTaskClick(task.id)">
       <ion-label>
         <h2>{{task.title}}</h2>
-        <h3>{{task.timeAllocated | time}}</h3>
+        <h3 *ngIf="!task.currentTask">{{task.timeAllocated | time}}</h3>
+        <h3 *ngIf="task.currentTask">Active Task</h3>
         <p>{{task.description}}</p>
       </ion-label>
     </ion-item>

@@ -24,8 +24,19 @@ export class SaveTimeGuard implements CanDeactivate<unknown> {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    this.taskService.updateTime(component.timeAllocated, component.taskDoc);
-    console.log(component.timeAllocated);
+    if (component.taskDetails) {
+      window.localStorage.setItem(
+        'timerRunning',
+        component.timerRunning.toString()
+      );
+      window.localStorage.setItem('taskId', component.taskDetails.id);
+      window.localStorage.setItem(
+        'timeAllocated',
+        component.timeAllocated.toString()
+      );
+      window.localStorage.setItem('timeOnLeave', Date.now().toString());
+      this.taskService.updateTime(component.timeAllocated, component.taskDoc);
+    }
     return true;
   }
 }
