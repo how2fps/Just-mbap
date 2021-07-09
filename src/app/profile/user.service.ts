@@ -23,7 +23,6 @@ export class UserService {
       ),
       map((action) => {
         const data = action.payload.data() as UserDetailsFull;
-        console.log(data);
         const id = action.payload.id;
         return { id, ...data };
       })
@@ -37,7 +36,6 @@ export class UserService {
       ),
       map((action) => {
         const data = action.data() as UserDetailsFull;
-        console.log(data);
         const id = action.id;
         return { id, ...data };
       })

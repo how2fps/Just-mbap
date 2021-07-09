@@ -21,6 +21,7 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
   timerRunning = false;
   stopTimer$ = new Subject();
   forceUpdateSub: Subscription;
+  isLoading = true;
   constructor(
     private route: ActivatedRoute,
     private taskService: TaskService,
@@ -36,6 +37,7 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.isLoading = true;
     this.forceUpdateSub = this.taskService.forceUpdate$
       .pipe(
         switchMap((initialTaskId) => {
@@ -82,13 +84,15 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
         }),
         tap((result) => {
           this.taskDetails = result;
-          this.taskDoc = this.afs.collection('tasks').doc<Task>(result.id);
-          if (!this.timeAllocated) {
-            this.timeAllocated = result.timeAllocated;
+          if (result) {
+            this.taskDoc = this.afs.collection('tasks').doc<Task>(result.id);
+            if (!this.timeAllocated) {
+              this.timeAllocated = result.timeAllocated;
+            }
           }
         })
       )
-      .subscribe();
+      .subscribe(() => (this.isLoading = false));
   }
 
   ngOnDestroy() {
@@ -119,5 +123,6 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
 
   completeTask(taskId: string, dateOfTask: Date) {
     this.taskService.completeTask(taskId, dateOfTask);
+    this.taskDetails = null;
   }
 }

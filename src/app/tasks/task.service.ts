@@ -14,7 +14,6 @@ import { UserService } from '../profile/user.service';
   providedIn: 'root',
 })
 export class TaskService {
-  currentUserID: string;
   forceUpdate$ = new BehaviorSubject('');
   private tasksCollection: AngularFirestoreCollection<Task>;
 
@@ -26,11 +25,8 @@ export class TaskService {
 
   getTasksByDate(date: Date) {
     return this.authService.currentUser$.pipe(
-      tap((user) => {
-        this.currentUserID = user.uid;
-      }),
-      switchMap((user) => {
-        const userID = user.uid;
+      map((user) => user.uid),
+      switchMap((userID) => {
         this.tasksCollection = this.afs.collection<Task>('tasks', (ref) =>
           ref.where('userID', '==', userID).where('date', '==', date)
         );
@@ -48,11 +44,18 @@ export class TaskService {
   }
 
   createTask(task: Task) {
-    return this.tasksCollection.add({
-      ...task,
-      userID: this.currentUserID,
-      date: new Date(task.date),
-    });
+    return this.authService.currentUser$
+      .pipe(
+        map((user) => user.uid),
+        switchMap((userID) => {
+          return this.afs.collection<Task>('tasks').add({
+            ...task,
+            userID,
+            date: new Date(task.date),
+          });
+        })
+      )
+      .subscribe();
   }
 
   updateTime(time: number, task: AngularFirestoreDocument<Task>) {
@@ -104,7 +107,6 @@ export class TaskService {
   }
 
   getTaskDetails(id: string) {
-    console.log('getTaskDetails running');
     return this.afs
       .collection<Task>('tasks')
       .doc(id)
