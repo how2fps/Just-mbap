@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
 import { LoadingController } from '@ionic/angular';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-form',
@@ -19,6 +20,7 @@ export class TaskFormPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.taskService.currentDate$.pipe(tap(currentDate)=>{})
     this.initForm();
   }
 

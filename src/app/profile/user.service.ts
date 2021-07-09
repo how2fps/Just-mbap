@@ -29,7 +29,7 @@ export class UserService {
     );
   }
 
-  getUserDetailsOnce() {
+  getUserDetailsOnce$() {
     return this.authService.currentUser$.pipe(
       switchMap((userDetails) =>
         this.afs.collection<UserDetailsFull>('users').doc(userDetails.uid).get()

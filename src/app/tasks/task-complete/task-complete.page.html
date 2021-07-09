@@ -1,9 +1,40 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>task-complete</ion-title>
+    <ion-title>Task completed!</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+<ion-content *ngIf="taskDetails">
+  <ion-text class="ion-text-center">
+    <h1>Task completed</h1>
+  </ion-text>
+  <ion-card class="ion-padding">
+    <ion-item>
+      <ion-label position="stacked" class="label">Title:</ion-label>
+      <ion-text>
+        <h3>{{taskDetails.title}}</h3>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label">Description:</ion-label>
+      <ion-text>
+        <h3>{{taskDetails.description}}</h3>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label">Current Streak:</ion-label>
+      <ion-text>
+        <h3>{{currentStreak}}</h3>
+      </ion-text>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked" class="label">Highest Streak:</ion-label>
+      <ion-text>
+        <h3>{{highestStreak}}</h3>
+      </ion-text>
+    </ion-item>
+  </ion-card>
+  <ion-button color="primary" class="ion-margin-top" expand="block" type="button" [routerLink]="['/tasks', 'all']">
+    Continue
+  </ion-button>
 </ion-content>

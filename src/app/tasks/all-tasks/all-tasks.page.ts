@@ -19,14 +19,13 @@ export class AllTasksPage {
     month: 'long',
   });
   tasks$: Observable<Task[]>;
-  currentDate$ = new BehaviorSubject<Date>(new Date());
   currentDateSub: Subscription;
   calendar = {
     currentDate: new Date(),
   };
 
   constructor(private taskService: TaskService, private router: Router) {
-    this.tasks$ = this.currentDate$.pipe(
+    this.tasks$ = this.taskService.currentDate$.pipe(
       switchMap((date) => this.taskService.getTasksByDate(date))
     );
   }
@@ -40,8 +39,7 @@ export class AllTasksPage {
       day: 'numeric',
       month: 'long',
     });
-
-    this.currentDate$.next(ev.selectedTime);
+    this.taskService.currentDate$.next(ev.selectedTime);
   }
 
   onTaskClick(id: string) {

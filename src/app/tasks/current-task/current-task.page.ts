@@ -3,7 +3,7 @@ import {
   AngularFirestore,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject, Subscription, timer } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
@@ -23,7 +23,7 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
   forceUpdateSub: Subscription;
   isLoading = true;
   constructor(
-    private route: ActivatedRoute,
+    private router: Router,
     private taskService: TaskService,
     private afs: AngularFirestore
   ) {}
@@ -122,7 +122,15 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
   }
 
   completeTask(taskId: string, dateOfTask: Date) {
-    this.taskService.completeTask(taskId, dateOfTask);
-    this.taskDetails = null;
+    this.taskService
+      .completeTask(taskId, dateOfTask)
+      .pipe(
+        tap(() => {
+          this.taskService.taskDetails$.next(this.taskDetails);
+          this.taskDetails = null;
+          this.router.navigate(['/tasks', 'complete']);
+        })
+      )
+      .subscribe();
   }
 }
