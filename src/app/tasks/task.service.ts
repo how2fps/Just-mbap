@@ -4,7 +4,7 @@ import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject,  } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';

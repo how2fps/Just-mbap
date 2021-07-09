@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
@@ -20,9 +20,7 @@ export class AllTasksPage {
   });
   tasks$: Observable<Task[]>;
   currentDateSub: Subscription;
-  calendar = {
-    currentDate: new Date(),
-  };
+  currentDate = new Date();
 
   constructor(private taskService: TaskService, private router: Router) {
     this.tasks$ = this.taskService.currentDate$.pipe(
@@ -39,6 +37,7 @@ export class AllTasksPage {
       day: 'numeric',
       month: 'long',
     });
+
     this.taskService.currentDate$.next(ev.selectedTime);
   }
 

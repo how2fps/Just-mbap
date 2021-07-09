@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
 import { LoadingController } from '@ionic/angular';
-import { tap } from 'rxjs/operators';
+import { distinctUntilChanged, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-form',
@@ -13,6 +13,7 @@ import { tap } from 'rxjs/operators';
 })
 export class TaskFormPage implements OnInit {
   taskForm: FormGroup;
+  selectedDate: Date;
   constructor(
     private taskService: TaskService,
     private loadingController: LoadingController,
@@ -20,8 +21,26 @@ export class TaskFormPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.taskService.currentDate$.pipe(tap(currentDate)=>{})
     this.initForm();
+    this.taskService.currentDate$
+      .pipe(
+        distinctUntilChanged(),
+        tap((currentDate) => {
+          this.selectedDate = currentDate;
+          let date = currentDate.getUTCDate().toString();
+          const year = currentDate.getFullYear().toString();
+          let month = (currentDate.getUTCMonth() + 1).toString();
+          if (Number(month) < 10) {
+            month = '0' + month;
+          }
+          if (Number(date) < 10) {
+            date = '0' + date;
+          }
+          const formattedDate = year + '-' + month + '-' + date;
+          this.taskForm.controls.date.setValue(formattedDate);
+        })
+      )
+      .subscribe();
   }
 
   initForm() {

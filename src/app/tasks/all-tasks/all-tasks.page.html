@@ -13,9 +13,9 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <calendar calendarMode="month" [currentDate]="calendar.currentDate"
-          (onTitleChanged)="onViewTitleChanged($event)" (onTimeSelected)="onTimeSelected($event)" class="calendar"
-          [showEventDetail]="false" formatMonthTitle="MMMM yyyy"></calendar>
+        <calendar calendarMode="month" [currentDate]="currentDate" (onTitleChanged)="onViewTitleChanged($event)"
+          (onTimeSelected)="onTimeSelected($event)" class="calendar" [showEventDetail]="false"
+          formatMonthTitle="MMMM yyyy" [preserveScrollPosition]='true'></calendar>
       </ion-col>
     </ion-row>
   </ion-grid>
