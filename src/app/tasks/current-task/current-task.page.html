@@ -27,6 +27,10 @@
     (click)="timerRunning ? stopTimer() : startTimer()">
     {{timerRunning ? 'Pause Task' : 'Start Task'}}
   </ion-button>
+  <ion-button color="primary" class="ion-margin-top" expand="block" type="button"
+    (click)="completeTask(taskDetails.id,taskDetails.date)">
+    Complete task
+  </ion-button>
 </ion-content>
 <ion-content *ngIf="!taskDetails">
   <ion-text class="ion-text-center">

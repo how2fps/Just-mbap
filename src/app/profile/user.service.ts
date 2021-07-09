@@ -29,4 +29,18 @@ export class UserService {
       })
     );
   }
+
+  getUserDetailsOnce() {
+    return this.authService.currentUser$.pipe(
+      switchMap((userDetails) =>
+        this.afs.collection<UserDetailsFull>('users').doc(userDetails.uid).get()
+      ),
+      map((action) => {
+        const data = action.data() as UserDetailsFull;
+        console.log(data);
+        const id = action.id;
+        return { id, ...data };
+      })
+    );
+  }
 }

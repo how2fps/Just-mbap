@@ -11,9 +11,9 @@ export interface LoginDetails {
 
 export interface UserDetailsFull {
   email: string;
-  currentStreak: string;
   displayName: string;
-  highestStreak: string;
+  currentStreak: number;
+  highestStreak: number;
   status: string;
   friends: string[];
 }

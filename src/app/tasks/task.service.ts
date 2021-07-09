@@ -8,6 +8,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';
+import { UserService } from '../profile/user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,8 @@ export class TaskService {
 
   constructor(
     private afs: AngularFirestore,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) {}
 
   getTasksByDate(date: Date) {
@@ -134,5 +136,53 @@ export class TaskService {
         }
       })
     );
+  }
+
+  completeTask(taskId: string, dateOfTask: Date) {
+    const updatedDateOfTask = (dateOfTask as any).toDate().getTime() / 1000;
+    const currentDate = new Date();
+    currentDate.setSeconds(0);
+    currentDate.setMinutes(0);
+    currentDate.setHours(12);
+    const currentDateInSeconds = Math.floor(currentDate.getTime() / 1000);
+    this.userService
+      .getUserDetailsOnce()
+      .pipe(
+        map((result) => {
+          const streakData = {
+            currentStreak: result.currentStreak,
+            highestStreak: result.highestStreak,
+            userDocId: result.id,
+          };
+          return streakData;
+        }),
+        tap(({ currentStreak, highestStreak, userDocId }) => {
+          const latestStreak = currentStreak + 1;
+          if (updatedDateOfTask >= currentDateInSeconds) {
+            this.afs
+              .collection('users')
+              .doc(userDocId)
+              .update({ currentStreak: latestStreak })
+              .then(() => {
+                if (latestStreak > highestStreak) {
+                  return this.afs
+                    .collection('users')
+                    .doc(userDocId)
+                    .update({ highestStreak: latestStreak });
+                }
+              })
+              .then(() => this.afs.collection('tasks').doc(taskId).delete())
+              .catch((err) => console.log(err));
+          } else {
+            this.afs
+              .collection('users')
+              .doc(userDocId)
+              .update({ currentStreak: 0 })
+              .then(() => this.afs.collection('tasks').doc(taskId).delete())
+              .catch((err) => console.log(err));
+          }
+        })
+      )
+      .subscribe();
   }
 }

@@ -36,7 +36,6 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('ngOnInit currentTask');
     this.forceUpdateSub = this.taskService.forceUpdate$
       .pipe(
         switchMap((initialTaskId) => {
@@ -116,5 +115,9 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
     this.timerRunning = false;
     this.taskService.updateTime(this.timeAllocated, this.taskDoc);
     this.stopTimer$.next();
+  }
+
+  completeTask(taskId: string, dateOfTask: Date) {
+    this.taskService.completeTask(taskId, dateOfTask);
   }
 }

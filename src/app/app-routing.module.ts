@@ -60,6 +60,15 @@ const routes: Routes = [
     data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
   },
   {
+    path: 'tasks/complete',
+    loadChildren: () =>
+      import('./tasks/task-complete/task-complete.module').then(
+        (m) => m.TaskCompletePageModule
+      ),
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
+  },
+  {
     path: 'task-details/:id',
     loadChildren: () =>
       import('./tasks/task-details/task-details.module').then(
