@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -10,28 +10,27 @@ import { Subscription } from 'rxjs';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit, OnDestroy {
+export class LoginPage implements OnInit {
   loginForm: FormGroup;
   subscription: Subscription;
   constructor(
     private authService: AuthService,
     private loadingController: LoadingController,
+    private toastController: ToastController,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.initForm();
-    this.subscription = this.authService.getCurrentUser$().subscribe();
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 
   initForm() {
     this.loginForm = new FormGroup({
-      email: new FormControl(''),
-      password: new FormControl(''),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+      ]),
     });
   }
 
@@ -46,8 +45,17 @@ export class LoginPage implements OnInit, OnDestroy {
         })
         .catch((err) => {
           loader.dismiss();
-          console.log(err);
+          this.toastController
+            .create({
+              message: err.message,
+              duration: 2000,
+            })
+            .then((toast) => toast.present());
         });
     });
+  }
+
+  goToSignUp() {
+    this.router.navigate(['/signup']);
   }
 }

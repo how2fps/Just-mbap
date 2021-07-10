@@ -63,16 +63,11 @@ export class AuthService {
   }
 
   logout() {
-    this.fireAuth
-      .signOut()
-      .then(() => {
-        this.router.navigate(['/login']);
-      })
-      .catch((err) => console.log(err));
+    this.fireAuth.signOut().catch((err) => console.log(err.error));
+    this.router.navigate(['/login']);
   }
 
   signUp(email, password) {
-    console.log('hi');
     let uid;
     return this.fireAuth
       .createUserWithEmailAndPassword(email, password)
@@ -81,7 +76,6 @@ export class AuthService {
         return this.generateFriendId();
       })
       .then((friendId) => {
-        console.log(friendId);
         this.afs.collection('users').doc(uid).set({
           email,
           displayName: email,

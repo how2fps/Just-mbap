@@ -49,6 +49,13 @@ const routes: Routes = [
       import('./auth/signup/signup.module').then((m) => m.SignUpPageModule),
   },
   {
+    path: 'forgot',
+    loadChildren: () =>
+      import('./auth/forgot-password/forgot-password.module').then(
+        (m) => m.ForgotPasswordPageModule
+      ),
+  },
+  {
     path: 'tasks/create',
     loadChildren: () =>
       import('./tasks/task-form/task-form.module').then(
