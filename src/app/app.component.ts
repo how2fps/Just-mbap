@@ -21,6 +21,9 @@ export class AppComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    firebase.initializeApp(this.firebaseConfig);
+    console.log(firebase.apps);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(this.firebaseConfig);
+    }
   }
 }

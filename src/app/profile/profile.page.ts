@@ -19,6 +19,8 @@ export class ProfilePage implements OnInit {
     this.userDetails$ = this.userService.getUserDetails$();
   }
 
+  editDetails() {}
+
   logout() {
     this.authService.logout();
   }

@@ -44,11 +44,9 @@ const routes: Routes = [
       import('./auth/login/login.module').then((m) => m.LoginPageModule),
   },
   {
-    path: 'register',
+    path: 'signup',
     loadChildren: () =>
-      import('./auth/register/register.module').then(
-        (m) => m.RegisterPageModule
-      ),
+      import('./auth/signup/signup.module').then((m) => m.SignUpPageModule),
   },
   {
     path: 'tasks/create',

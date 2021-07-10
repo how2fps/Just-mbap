@@ -5,34 +5,35 @@
 </ion-header>
 
 <ion-content *ngIf="userDetails$ | async as userDetails" class="ion-padding">
-  <ion-text class="ion-text-center">
-    <h1></h1>
-  </ion-text>
   <ion-card class="ion-padding">
-    <ion-item>
-      <ion-label position="stacked" class="label">Display name:</ion-label>
-      <ion-text>
-        <h3>{{userDetails.displayName}}</h3>
-      </ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked" class="label">Status:</ion-label>
-      <ion-text>
-        <h3>{{userDetails.status}}</h3>
-      </ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked" class="label">Highest streak:</ion-label>
-      <ion-text>
-        <h3>{{userDetails.highestStreak}}</h3>
-      </ion-text>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked" class="label">Current streak:</ion-label>
-      <ion-text>
-        <h3>{{userDetails.currentStreak}}</h3>
-      </ion-text>
-    </ion-item>
-    <ion-button type="button" color="danger" (click)="logout()">Logout</ion-button>
+    <img src="https://via.placeholder.com/150" />
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">
+        {{userDetails.displayName}}
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked" class="label">Status:</ion-label>
+        <ion-text>
+          {{userDetails.status}}
+        </ion-text>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked" class="label">Highest streak:</ion-label>
+        <ion-text>
+          {{userDetails.highestStreak}}
+        </ion-text>
+      </ion-item>
+      <ion-item class="ion-margin-bottom">
+        <ion-label position="stacked" class="label">Current streak:</ion-label>
+        <ion-text>
+          {{userDetails.currentStreak}}
+        </ion-text>
+      </ion-item>
+    </ion-card-content>
+    <ion-button class="ion-margin-vertical" expand="block" type="button" color="primary" (click)="editDetails()">Edit
+      details</ion-button>
+    <ion-button expand="block" type="button" color="danger" (click)="logout()">Logout</ion-button>
   </ion-card>
 </ion-content>

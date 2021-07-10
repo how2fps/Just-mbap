@@ -33,9 +33,9 @@
   </ion-button>
 </ion-content>
 <ion-content *ngIf="!taskDetails && !isLoading">
-  <ion-text class="ion-text-center">
+  <ion-text class="ion-text-center fixed-center">
     <h1>No current task, start a task to set it to your current task!</h1>
   </ion-text>
 </ion-content>
 
-<ion-spinner *ngIf="isLoading" name="lines" class="page-loader"></ion-spinner>
+<ion-spinner *ngIf="isLoading" name="lines" class="fixed-center"></ion-spinner>

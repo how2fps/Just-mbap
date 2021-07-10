@@ -105,7 +105,8 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.stopTimer$),
         tap(() => {
-          if (this.timeAllocated === 0) {
+          if (this.timeAllocated <= 0) {
+            this.completeTask(this.taskDetails.id, this.taskDetails.date);
             this.stopTimer$.next();
             return;
           }
