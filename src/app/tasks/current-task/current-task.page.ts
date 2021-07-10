@@ -129,7 +129,7 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
         tap(() => {
           this.taskService.taskDetails$.next(this.taskDetails);
           this.taskDetails = null;
-          this.router.navigate(['/tasks', 'complete']);
+          this.router.navigate(['/complete']);
         })
       )
       .subscribe();

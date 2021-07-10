@@ -4,11 +4,11 @@ import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import { BehaviorSubject,  } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';
-import { UserService } from '../profile/user.service';
+import { UserService } from '../users/user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +27,7 @@ export class TaskService {
 
   getTasksByDate(date: Date) {
     return this.authService.currentUser$.pipe(
+      filter((user) => user !== null),
       map((user) => user.uid),
       switchMap((userID) => {
         this.tasksCollection = this.afs.collection<Task>('tasks', (ref) =>
@@ -124,6 +125,7 @@ export class TaskService {
 
   getCurrentTask() {
     return this.authService.currentUser$.pipe(
+      filter((user) => user !== null),
       map((user) => user.uid),
       switchMap((userID) =>
         this.afs

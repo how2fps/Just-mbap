@@ -7,37 +7,22 @@ import {
 
 const routes: Routes = [
   {
-    path: 'profile',
+    path: '',
     loadChildren: () =>
-      import('./profile/profile.module').then((m) => m.ProfilePageModule),
+      import('./tabs/tabs.module').then((m) => m.TabsPageModule),
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
   },
   {
-    path: 'tasks/all',
+    path: 'editprofile',
     loadChildren: () =>
-      import('./tasks/all-tasks/all-tasks.module').then(
-        (m) => m.AllTasksPageModule
+      import('./users/edit-profile/edit-profile.module').then(
+        (m) => m.EditProfilePageModule
       ),
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
   },
-  {
-    path: 'friends',
-    loadChildren: () =>
-      import('./friends/friends.module').then((m) => m.FriendsPageModule),
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
-  },
-  {
-    path: 'tasks/current',
-    loadChildren: () =>
-      import('./tasks/current-task/current-task.module').then(
-        (m) => m.CurrentTaskPageModule
-      ),
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
-  },
+
   {
     path: 'login',
     loadChildren: () =>
@@ -56,7 +41,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'tasks/create',
+    path: 'create',
     loadChildren: () =>
       import('./tasks/task-form/task-form.module').then(
         (m) => m.TaskFormPageModule
@@ -65,7 +50,7 @@ const routes: Routes = [
     data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
   },
   {
-    path: 'tasks/complete',
+    path: 'complete',
     loadChildren: () =>
       import('./tasks/task-complete/task-complete.module').then(
         (m) => m.TaskCompletePageModule
@@ -81,11 +66,6 @@ const routes: Routes = [
       ),
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
-  },
-  {
-    path: '',
-    redirectTo: 'tasks/all',
-    pathMatch: 'full',
   },
 ];
 

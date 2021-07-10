@@ -63,8 +63,24 @@ export class AuthService {
   }
 
   logout() {
-    this.fireAuth.signOut().catch((err) => console.log(err.error));
     this.router.navigate(['/login']);
+    return new Promise<void>((resolve, reject) => {
+      if (this.fireAuth.currentUser) {
+        this.fireAuth
+          .signOut()
+          .then(() => {
+            console.log('Sign out');
+            resolve();
+          })
+          .catch(() => {
+            reject();
+          });
+      }
+    });
+  }
+
+  forgotPassword(email: string) {
+    return firebase.auth().sendPasswordResetEmail(email);
   }
 
   signUp(email, password) {

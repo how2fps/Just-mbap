@@ -78,7 +78,7 @@ export class TaskFormPage implements OnInit {
         return this.taskService.createTask(newTask);
       })
       .then(() => {
-        this.router.navigate(['/tasks', 'all']);
+        this.router.navigate(['']);
         loaderElement.dismiss();
       });
   }

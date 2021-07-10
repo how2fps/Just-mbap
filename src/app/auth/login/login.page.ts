@@ -40,8 +40,9 @@ export class LoginPage implements OnInit {
       this.authService
         .login(this.loginForm.value)
         .then(() => {
+          this.loginForm.reset();
           loader.dismiss();
-          this.router.navigate(['tasks', 'all']);
+          this.router.navigate(['']);
         })
         .catch((err) => {
           loader.dismiss();
@@ -57,5 +58,9 @@ export class LoginPage implements OnInit {
 
   goToSignUp() {
     this.router.navigate(['/signup']);
+  }
+
+  goToForgotPassword() {
+    this.router.navigate(['/forgot']);
   }
 }

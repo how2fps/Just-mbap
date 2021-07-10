@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { filter, switchMap, tap } from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
-import { UserService } from 'src/app/profile/user.service';
+import { UserService } from 'src/app/users/user.service';
 import { TaskService } from '../task.service';
 
 @Component({
@@ -25,7 +25,7 @@ export class TaskCompletePage implements OnInit {
       .pipe(
         tap((taskDetails) => {
           if (!taskDetails) {
-            this.router.navigate(['/tasks', 'all']);
+            this.router.navigate(['']);
           } else {
             this.taskDetails = taskDetails;
           }

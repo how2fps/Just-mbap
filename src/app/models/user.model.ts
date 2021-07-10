@@ -16,4 +16,5 @@ export interface UserDetailsFull {
   highestStreak: number;
   status: string;
   friends: string[];
+  friendId: string;
 }

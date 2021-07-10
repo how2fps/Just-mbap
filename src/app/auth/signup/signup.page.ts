@@ -41,6 +41,7 @@ export class SignUpPage implements OnInit {
       this.authService
         .signUp(email, password)
         .then(() => {
+          this.signUpForm.reset();
           loader.dismiss();
           this.router.navigate(['tasks', 'all']);
         })

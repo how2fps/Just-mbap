@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { UserDetailsFull } from '../models/user.model';
 
@@ -15,6 +15,7 @@ export class UserService {
 
   getUserDetails$() {
     return this.authService.currentUser$.pipe(
+      filter((userDetails) => userDetails !== null),
       switchMap((userDetails) =>
         this.afs
           .collection<UserDetailsFull>('users')

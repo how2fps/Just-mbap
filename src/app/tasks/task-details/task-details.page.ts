@@ -35,7 +35,7 @@ export class TaskDetailsPage implements OnInit {
         switchMap((id) => this.taskService.getTaskDetails(id)),
         tap((result) => {
           if (result.currentTask === true) {
-            return this.router.navigate(['tasks', 'current']);
+            return this.router.navigate(['/tabs', 'current']);
           }
           this.taskDetails = result;
           this.taskDoc = this.afs.collection('tasks').doc<Task>(result.id);
@@ -46,7 +46,7 @@ export class TaskDetailsPage implements OnInit {
 
   setCurrentTask() {
     this.taskService.updateTaskToCurrent(this.taskDetails.id).subscribe(() => {
-      this.router.navigate(['/tasks', 'current']);
+      this.router.navigate(['/tabs', 'current']);
     });
     if (window.localStorage.getItem('timerRunning') === 'true') {
       const taskId = window.localStorage.getItem('taskId');
