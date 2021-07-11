@@ -35,4 +35,15 @@ export class FriendsService {
       })
     );
   }
+
+  sendFriendRequest(friendId) {
+    return this.userService.getUserDetails$().pipe(
+      map((userDetails) => userDetails.id),
+      switchMap((userId) =>
+        this.afs
+          .collection('friendRequests')
+          .add({ senderId: userId, friendId })
+      )
+    );
+  }
 }

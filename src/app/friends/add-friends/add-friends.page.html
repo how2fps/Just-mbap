@@ -5,5 +5,23 @@
 </ion-header>
 
 <ion-content>
-
+  <form [formGroup]="addFriendForm" (ngSubmit)="onSubmit()">
+    <ion-grid>
+      <ion-item>
+        <ion-label position="stacked">Friend ID</ion-label>
+        <ion-input type="text" formControlName="friendId"></ion-input>
+      </ion-item>
+      <ion-button type="submit" expand="block">
+        Send request
+      </ion-button>
+    </ion-grid>
+  </form>
+  <!-- <ion-list *ngFor="let friend of friends$ | async">
+    <ion-item>
+      <ion-label>
+        <h2>{{friend.displayName}}</h2>
+        <h3>{{friend.status}}</h3>
+      </ion-label>
+    </ion-item>
+  </ion-list> -->
 </ion-content>

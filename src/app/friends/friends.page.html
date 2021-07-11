@@ -7,8 +7,8 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-button expand="block">
-    Add Friend
+  <ion-button expand="block" (click)="goToAddFriends()">
+    Add Friends
   </ion-button>
   <ion-list *ngFor="let friend of friends$ | async">
     <ion-item>
