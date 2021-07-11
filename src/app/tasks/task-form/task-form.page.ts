@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 import { distinctUntilChanged, tap } from 'rxjs/operators';
 
 @Component({
@@ -17,6 +17,7 @@ export class TaskFormPage implements OnInit {
   constructor(
     private taskService: TaskService,
     private loadingController: LoadingController,
+    private toastController: ToastController,
     private router: Router
   ) {}
 
@@ -56,6 +57,7 @@ export class TaskFormPage implements OnInit {
   }
 
   onSubmit() {
+    const taskDate = new Date(this.taskForm.controls.date.value).toDateString();
     let loaderElement: HTMLIonLoadingElement;
     this.loadingController
       .create()
@@ -80,6 +82,12 @@ export class TaskFormPage implements OnInit {
       .then(() => {
         this.router.navigate(['']);
         loaderElement.dismiss();
+        this.toastController
+          .create({
+            message: 'Task on ' + taskDate + ' created.',
+            duration: 2000,
+          })
+          .then((toast) => toast.present());
       });
   }
 }

@@ -42,4 +42,11 @@ export class UserService {
       })
     );
   }
+
+  updateNameAndStatus(userId: string, name: string, status: string) {
+    return this.afs
+      .collection('users')
+      .doc(userId)
+      .update({ displayName: name, status });
+  }
 }

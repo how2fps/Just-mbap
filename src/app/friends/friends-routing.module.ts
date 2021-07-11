@@ -7,6 +7,10 @@ const routes: Routes = [
     path: '',
     component: FriendsPage,
   },
+  {
+    path: 'add-friends',
+    loadChildren: () => import('./add-friends/add-friends.module').then( m => m.AddFriendsPageModule)
+  },
 ];
 
 @NgModule({

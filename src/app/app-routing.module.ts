@@ -7,23 +7,6 @@ import {
 
 const routes: Routes = [
   {
-    path: '',
-    loadChildren: () =>
-      import('./tabs/tabs.module').then((m) => m.TabsPageModule),
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
-  },
-  {
-    path: 'editprofile',
-    loadChildren: () =>
-      import('./users/edit-profile/edit-profile.module').then(
-        (m) => m.EditProfilePageModule
-      ),
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
-  },
-
-  {
     path: 'login',
     loadChildren: () =>
       import('./auth/login/login.module').then((m) => m.LoginPageModule),
@@ -39,6 +22,22 @@ const routes: Routes = [
       import('./auth/forgot-password/forgot-password.module').then(
         (m) => m.ForgotPasswordPageModule
       ),
+  },
+  {
+    path: '',
+    loadChildren: () =>
+      import('./tabs/tabs.module').then((m) => m.TabsPageModule),
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
+  },
+  {
+    path: 'editprofile',
+    loadChildren: () =>
+      import('./users/edit-profile/edit-profile.module').then(
+        (m) => m.EditProfilePageModule
+      ),
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
   },
   {
     path: 'create',

@@ -43,7 +43,7 @@ export class SignUpPage implements OnInit {
         .then(() => {
           this.signUpForm.reset();
           loader.dismiss();
-          this.router.navigate(['tasks', 'all']);
+          this.router.navigate(['']);
         })
         .catch((err) => {
           loader.dismiss();
