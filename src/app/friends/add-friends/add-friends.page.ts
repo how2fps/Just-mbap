@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
+import { catchError, tap } from 'rxjs/operators';
 import { FriendsService } from '../friends.service';
 
 @Component({
@@ -24,7 +25,10 @@ export class AddFriendsPage implements OnInit {
 
   initForm() {
     this.addFriendForm = new FormGroup({
-      friendId: new FormControl('', Validators.required),
+      friendId: new FormControl('', [
+        Validators.required,
+        Validators.minLength(4),
+      ]),
     });
   }
 
@@ -32,7 +36,41 @@ export class AddFriendsPage implements OnInit {
     this.loadingController.create().then((loader) => {
       loader.present();
       const friendId = this.addFriendForm.value.friendId;
-      this.friendsService.sendFriendRequest(friendId);
+      this.friendsService
+        .sendFriendRequest(friendId)
+        .pipe(
+          tap((result) => {
+            if (!result) {
+              loader.dismiss();
+              this.toastController
+                .create({
+                  message: 'Friend ID ' + friendId + ' does not exist.',
+                  duration: 2000,
+                })
+                .then((toast) => toast.present());
+            } else if (result.existingFriendRequest === true) {
+              this.addFriendForm.reset();
+              loader.dismiss();
+              this.toastController
+                .create({
+                  message:
+                    'Friend request has already been sent to ' + friendId + '.',
+                  duration: 2000,
+                })
+                .then((toast) => toast.present());
+            } else {
+              this.addFriendForm.reset();
+              loader.dismiss();
+              this.toastController
+                .create({
+                  message: 'Friend request sent to Friend ID ' + friendId + '.',
+                  duration: 2000,
+                })
+                .then((toast) => toast.present());
+            }
+          })
+        )
+        .subscribe();
     });
   }
 }
