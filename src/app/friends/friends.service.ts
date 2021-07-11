@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { combineLatest, of } from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { combineLatest, from, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { FriendRequest } from '../models/friend-request.model';
 import { UserDetailsFull } from '../models/user.model';
 import { UserService } from '../users/user.service';
 
@@ -37,7 +38,8 @@ export class FriendsService {
   }
 
   sendFriendRequest(friendId: string) {
-    let senderDetails;
+    let friendsArray: string[];
+    let senderFriendId: string;
     return this.afs
       .collection('users', (ref) => ref.where('friendId', '==', friendId))
       .get()
@@ -49,38 +51,48 @@ export class FriendsService {
           }
           return this.userService.getUserDetails$();
         }),
-        switchMap((userDetails) => {
+        switchMap((userDetails: UserDetailsFull | null) => {
           if (userDetails) {
-            senderDetails = {
-              senderFriendId: userDetails.friendId,
-              senderDisplayName: userDetails.displayName,
-            };
-            return this.afs
-              .collection('friendRequests', (ref) =>
-                ref
-                  .where(
-                    'senderDetails.senderFriendId',
-                    '==',
-                    senderDetails.senderFriendId
-                  )
-                  .where('friendId', '==', friendId)
-              )
-              .get();
+            friendsArray = userDetails.friends;
+            senderFriendId = userDetails.friendId;
+            if (
+              friendsArray.indexOf(friendId) !== -1 ||
+              senderFriendId === friendId
+            ) {
+              return of(null);
+            }
+            return combineLatest([
+              this.afs
+                .collection<FriendRequest>('friendRequests', (ref) =>
+                  ref
+                    .where('senderFriendId', '==', senderFriendId)
+                    .where('friendId', '==', friendId)
+                )
+                .get(),
+              this.afs
+                .collection<FriendRequest>('friendRequests', (ref) =>
+                  ref
+                    .where('senderFriendId', '==', friendId)
+                    .where('friendId', '==', senderFriendId)
+                )
+                .get(),
+            ]);
           }
           return of(null);
         }),
-        switchMap((result) => {
-          if (result) {
-            if (result.docs.length >= 1) {
+        switchMap((results) => {
+          if (results) {
+            console.log(results);
+            if (results[0].docs.length > 0 || results[1].docs.length > 0) {
               return of({ existingFriendRequest: true });
+            } else {
+              return from(
+                this.afs.collection('friendRequests').add({
+                  senderFriendId,
+                  friendId,
+                })
+              ).pipe(map(() => ({ existingFriendRequest: false })));
             }
-            return this.afs
-              .collection('friendRequests')
-              .add({
-                senderDetails,
-                friendId,
-              })
-              .then(() => ({ existingFriendRequest: false }));
           }
           return of(null);
         })
@@ -92,11 +104,41 @@ export class FriendsService {
       map((userDetails) => userDetails.friendId),
       switchMap((friendId) =>
         this.afs
-          .collection('friendRequests', (ref) =>
+          .collection<FriendRequest>('friendRequests', (ref) =>
             ref.where('friendId', '==', friendId)
           )
           .snapshotChanges()
-      )
+      ),
+      map((actions) =>
+        actions.map((a) => {
+          const data = a.payload.doc.data() as FriendRequest;
+          return data.senderFriendId;
+        })
+      ),
+      switchMap((senderFriendIdArray) =>
+        combineLatest(
+          senderFriendIdArray.map((senderFriendId) =>
+            this.afs
+              .collection('users', (ref) =>
+                ref.where('friendId', '==', senderFriendId)
+              )
+              .snapshotChanges()
+              .pipe(
+                map((actions) =>
+                  actions.map((a) => {
+                    const data = a.payload.doc.data() as UserDetailsFull;
+                    return data.displayName;
+                  })
+                )
+              )
+          )
+        )
+      ),
+      map((result) => {
+        const displayNameArray: string[] = [];
+        result.forEach((res) => displayNameArray.push(res[0]));
+        return displayNameArray;
+      })
     );
   }
 }

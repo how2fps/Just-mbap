@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
-import { catchError, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { FriendRequest } from 'src/app/models/friend-request.model';
 import { FriendsService } from '../friends.service';
 
 @Component({
@@ -12,15 +13,17 @@ import { FriendsService } from '../friends.service';
 })
 export class AddFriendsPage implements OnInit {
   addFriendForm: FormGroup;
+  friendRequestDisplayNames$: Observable<string[]>;
   constructor(
     private friendsService: FriendsService,
     private loadingController: LoadingController,
-    private toastController: ToastController,
-    private router: Router
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
     this.initForm();
+    this.friendRequestDisplayNames$ =
+      this.friendsService.getAllFriendRequests();
   }
 
   initForm() {
@@ -40,34 +43,22 @@ export class AddFriendsPage implements OnInit {
         .sendFriendRequest(friendId)
         .pipe(
           tap((result) => {
+            let message;
             if (!result) {
-              loader.dismiss();
-              this.toastController
-                .create({
-                  message: 'Friend ID ' + friendId + ' does not exist.',
-                  duration: 2000,
-                })
-                .then((toast) => toast.present());
+              message = 'Invalid Friend ID.';
             } else if (result.existingFriendRequest === true) {
-              this.addFriendForm.reset();
-              loader.dismiss();
-              this.toastController
-                .create({
-                  message:
-                    'Friend request has already been sent to ' + friendId + '.',
-                  duration: 2000,
-                })
-                .then((toast) => toast.present());
+              message =
+                'Friend request has already been sent to ' + friendId + '.';
             } else {
-              this.addFriendForm.reset();
-              loader.dismiss();
-              this.toastController
-                .create({
-                  message: 'Friend request sent to Friend ID ' + friendId + '.',
-                  duration: 2000,
-                })
-                .then((toast) => toast.present());
+              message = 'Friend request sent to Friend ID ' + friendId + '.';
             }
+            loader.dismiss();
+            this.toastController
+              .create({
+                message,
+                duration: 2000,
+              })
+              .then((toast) => toast.present());
           })
         )
         .subscribe();
