@@ -161,9 +161,9 @@ export class FriendsService {
       .get()
       .pipe(
         map((data) => data.data()),
-        switchMap(({ receiverFriendId, senderFriendId }) => {
+        switchMap(({ receiverFriendId, senderFriendId }) =>
           //add sender friend Id to receiver's friendlist
-          return combineLatest([
+          combineLatest([
             this.afs
               .collection<UserDetailsFull>('users', (ref) =>
                 ref.where('friendId', '==', receiverFriendId)
@@ -199,8 +199,8 @@ export class FriendsService {
                     .update({ friends: friendArray });
                 })
               ),
-          ]);
-        }),
+          ])
+        ),
         switchMap(() =>
           from(
             this.afs.collection('friendRequests').doc(friendRequestId).delete()
@@ -215,7 +215,46 @@ export class FriendsService {
     );
   }
 
-  getFriendProfile(friendDocId:string) {
-    
+  getFriendProfile(friendDocId: string) {
+    return this.afs
+      .collection<UserDetailsFull>('users')
+      .doc(friendDocId)
+      .get()
+      .pipe(
+        map((result) => {
+          const friendDetails = result.data();
+          return { ...friendDetails, docId: result.id };
+        })
+      );
+  }
+
+  deleteFriend(friendsFriendId: string, friendsDocId: string) {
+    let userFriendId: string;
+    return this.userService.getUserDetailsOnce$().pipe(
+      switchMap((userDetails) => {
+        const userDocId = userDetails.id;
+        userFriendId = userDetails.friendId;
+        const userFriendList = [...userDetails.friends];
+        const updatedFriendList = userFriendList.filter(
+          (friendId) => friendId !== friendsFriendId
+        );
+        return this.afs
+          .collection('users')
+          .doc(userDocId)
+          .update({ friends: updatedFriendList });
+      }),
+      switchMap(() => this.getFriendProfile(friendsDocId)),
+      switchMap((friendDetails) => {
+        const friendsFriendList = [...friendDetails.friends];
+        const updatedFriendList = friendsFriendList.filter(
+          (friendId) => friendId !== userFriendId
+        );
+        console.log(updatedFriendList);
+        return this.afs
+          .collection('users')
+          .doc(friendsDocId)
+          .update({ friends: updatedFriendList });
+      })
+    );
   }
 }
