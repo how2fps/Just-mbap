@@ -160,18 +160,53 @@ export class FriendsService {
       .pipe(
         map((data) => data.data()),
         switchMap(({ receiverFriendId, senderFriendId }) => {
+          //add sender friend Id to receiver's friendlist
           return combineLatest([
             this.afs
-              .collection('users', (ref) =>
+              .collection<UserDetailsFull>('users', (ref) =>
                 ref.where('friendId', '==', receiverFriendId)
               )
-              .get(),
+              .get()
+              .pipe(
+                switchMap((result) => {
+                  const friendArray = [...result.docs[0].data().friends];
+                  if (friendArray.indexOf(senderFriendId) === -1) {
+                    friendArray.push(senderFriendId);
+                    console.log(friendArray);
+                  }
+                  return this.afs
+                    .collection('users')
+                    .doc(result.docs[0].id)
+                    .update({ friends: friendArray });
+                })
+              ),
+            //add receiver friend Id to sender's friendlist
+            this.afs
+              .collection<UserDetailsFull>('users', (ref) =>
+                ref.where('friendId', '==', senderFriendId)
+              )
+              .get()
+              .pipe(
+                switchMap((result) => {
+                  const friendArray = [...result.docs[0].data().friends];
+                  if (friendArray.indexOf(receiverFriendId) === -1) {
+                    friendArray.push(receiverFriendId);
+                    console.log(friendArray);
+                  }
+                  return this.afs
+                    .collection('users')
+                    .doc(result.docs[0].id)
+                    .update({ friends: friendArray });
+                })
+              ),
           ]);
-        })
+        }),
+        switchMap(() =>
+          from(
+            this.afs.collection('friendRequests').doc(friendRequestId).delete()
+          )
+        )
       );
-    // return from(
-    //   this.afs.collection('friendRequests').doc(friendRequestId).delete()
-    // ).pipe(switchMap(() => this.afs.collection('users')));
   }
 
   declineFriendRequest(friendRequestId: string) {
