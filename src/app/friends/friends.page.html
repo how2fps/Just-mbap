@@ -11,7 +11,7 @@
     Add Friends
   </ion-button>
   <ion-list *ngFor="let friend of friends$ | async">
-    <ion-item>
+    <ion-item (click)="goToFriendProfile(friend.docId)">
       <ion-label>
         <h2>{{friend.displayName}}</h2>
         <h3>{{friend.status}}</h3>

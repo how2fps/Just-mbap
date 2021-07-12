@@ -10,7 +10,11 @@ const routes: Routes = [
   {
     path: 'add-friends',
     loadChildren: () => import('./add-friends/add-friends.module').then( m => m.AddFriendsPageModule)
+  },  {
+    path: 'friend-profile',
+    loadChildren: () => import('./friend-profile/friend-profile.module').then( m => m.FriendProfilePageModule)
   },
+
 ];
 
 @NgModule({

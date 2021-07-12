@@ -19,4 +19,8 @@ export class FriendsPage implements OnInit {
   goToAddFriends() {
     this.router.navigate(['/add-friends']);
   }
+
+  goToFriendProfile(friendDocId: string) {
+    this.router.navigate(['/friends', friendDocId]);
+  }
 }

@@ -30,8 +30,10 @@ export class FriendsService {
         )
       ),
       map((result) => {
-        const friendArray = [];
-        result.forEach((res) => friendArray.push(res.docs[0].data()));
+        const friendArray: UserDetailsFull[] = [];
+        result.forEach((res) =>
+          friendArray.push({ ...res.docs[0].data(), docId: res.docs[0].id })
+        );
         return friendArray;
       })
     );
@@ -172,7 +174,6 @@ export class FriendsService {
                   const friendArray = [...result.docs[0].data().friends];
                   if (friendArray.indexOf(senderFriendId) === -1) {
                     friendArray.push(senderFriendId);
-                    console.log(friendArray);
                   }
                   return this.afs
                     .collection('users')
@@ -191,7 +192,6 @@ export class FriendsService {
                   const friendArray = [...result.docs[0].data().friends];
                   if (friendArray.indexOf(receiverFriendId) === -1) {
                     friendArray.push(receiverFriendId);
-                    console.log(friendArray);
                   }
                   return this.afs
                     .collection('users')
@@ -213,5 +213,9 @@ export class FriendsService {
     return from(
       this.afs.collection('friendRequests').doc(friendRequestId).delete()
     );
+  }
+
+  getFriendProfile(friendDocId:string) {
+    
   }
 }

@@ -10,6 +10,7 @@ export interface LoginDetails {
 }
 
 export interface UserDetailsFull {
+  docId?: string;
   email: string;
   displayName: string;
   currentStreak: number;

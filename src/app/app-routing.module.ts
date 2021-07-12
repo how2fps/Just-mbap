@@ -75,6 +75,15 @@ const routes: Routes = [
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
   },
+  {
+    path: 'friends/:id',
+    loadChildren: () =>
+      import('./friends/friend-profile/friend-profile.module').then(
+        (m) => m.FriendProfilePageModule
+      ),
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
+  },
 ];
 
 @NgModule({
