@@ -262,7 +262,7 @@ export class FriendsService {
 
   getFriendsVisibleTasks(friendDocId: string) {
     const date = Date.now();
-    this.afs
+    return this.afs
       .collection<Task>('tasks', (ref) =>
         ref
           .where('userID', '==', friendDocId)
