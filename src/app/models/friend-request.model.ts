@@ -1,5 +1,5 @@
 export interface FriendRequest {
   senderFriendId: string;
-  friendId: string;
+  receiverFriendId: string;
 }
 

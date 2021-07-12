@@ -45,7 +45,22 @@ export class AddFriendsPage implements OnInit, OnDestroy {
   }
 
   acceptFriendRequest(friendRequestId: string, displayName: string) {
-    this.friendsService.acceptFriendRequest(friendRequestId);
+    const subscription = this.friendsService
+      .acceptFriendRequest(friendRequestId)
+      .pipe(
+        tap(() => {
+          this.friendRequests = this.friendRequests.filter(
+            (results) => results.friendRequestDocId !== friendRequestId
+          );
+          this.toastController
+            .create({
+              message: 'Accepted friend request from ' + displayName + '.',
+              duration: 2000,
+            })
+            .then((toast) => toast.present());
+        })
+      )
+      .subscribe(() => this.subscriptionArray.push(subscription));
   }
 
   declineFriendRequest(friendRequestId: string, displayName: string) {
@@ -58,7 +73,7 @@ export class AddFriendsPage implements OnInit, OnDestroy {
           );
           this.toastController
             .create({
-              message: 'Declined friend request',
+              message: 'Declined friend request from ' + displayName + '.',
               duration: 2000,
             })
             .then((toast) => toast.present());

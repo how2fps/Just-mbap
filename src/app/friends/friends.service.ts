@@ -152,7 +152,27 @@ export class FriendsService {
     );
   }
 
-  acceptFriendRequest(friendRequestId: string) {}
+  acceptFriendRequest(friendRequestId: string) {
+    return this.afs
+      .collection('friendRequests')
+      .doc<FriendRequest>(friendRequestId)
+      .get()
+      .pipe(
+        map((data) => data.data()),
+        switchMap(({ receiverFriendId, senderFriendId }) => {
+          return combineLatest([
+            this.afs
+              .collection('users', (ref) =>
+                ref.where('friendId', '==', receiverFriendId)
+              )
+              .get(),
+          ]);
+        })
+      );
+    // return from(
+    //   this.afs.collection('friendRequests').doc(friendRequestId).delete()
+    // ).pipe(switchMap(() => this.afs.collection('users')));
+  }
 
   declineFriendRequest(friendRequestId: string) {
     return from(
