@@ -30,14 +30,26 @@
     </ion-toolbar>
   </ion-header>
   <ion-list *ngFor="let task of tasks$ | async">
-    <ion-item [color]="task.currentTask ? 'primary' : ''" (click)="onTaskClick(task.id)">
-      <ion-label>
-        <h2>{{task.title}}</h2>
-        <h3 *ngIf="!task.currentTask">{{task.timeAllocated | time}}</h3>
-        <h3 *ngIf="task.currentTask">Active Task</h3>
-        <p>{{task.description}}</p>
-      </ion-label>
-    </ion-item>
+    <ion-item-sliding>
+      <ion-item [color]="task.currentTask ? 'primary' : ''" (click)="onTaskClick(task.id)">
+        <ion-label>
+          <h2>{{task.title}}</h2>
+          <h3 *ngIf="!task.currentTask">{{task.timeAllocated | time}}</h3>
+          <h3 *ngIf="task.currentTask">Active Task</h3>
+          <p>{{task.description}}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item-options>
+        <ion-item-option color="secondary">
+          <ion-icon slot="start" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+          Edit
+        </ion-item-option>
+        <ion-item-option color="danger">
+          <ion-icon slot="start" name="archive"></ion-icon>
+          Delete
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
   <ion-item *ngIf="(tasks$ | async)?.length === 0">
     <p>No tasks yet!</p>

@@ -3,6 +3,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { combineLatest, from, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { FriendRequest } from '../models/friend-request.model';
+import { Task } from '../models/task.model';
 import { UserDetailsFull } from '../models/user.model';
 import { UserService } from '../users/user.service';
 
@@ -131,14 +132,16 @@ export class FriendsService {
               .collection('users', (ref) =>
                 ref.where('friendId', '==', senderFriendId)
               )
-              .get()
+              .snapshotChanges()
               .pipe(
-                map((a) => {
-                  const data = a.docs[0].data() as UserDetailsFull;
-                  const displayName = data.displayName;
-                  const friendDetails = { displayName, friendRequestDocId };
-                  return friendDetails;
-                })
+                map((actions) =>
+                  actions.map((a) => {
+                    const data = a.payload.doc.data() as UserDetailsFull;
+                    const displayName = data.displayName;
+                    const friendDetails = { displayName, friendRequestDocId };
+                    return friendDetails;
+                  })
+                )
               );
           })
         )
@@ -148,7 +151,7 @@ export class FriendsService {
           displayName: string;
           friendRequestDocId: string;
         }[] = [];
-        result.forEach((res) => friendRequestDetailsArray.push(res));
+        result.forEach((res) => friendRequestDetailsArray.push(res[0]));
         return friendRequestDetailsArray;
       })
     );
@@ -249,12 +252,32 @@ export class FriendsService {
         const updatedFriendList = friendsFriendList.filter(
           (friendId) => friendId !== userFriendId
         );
-        console.log(updatedFriendList);
         return this.afs
           .collection('users')
           .doc(friendsDocId)
           .update({ friends: updatedFriendList });
       })
     );
+  }
+
+  getFriendsVisibleTasks(friendDocId: string) {
+    const date = Date.now();
+    this.afs
+      .collection<Task>('tasks', (ref) =>
+        ref
+          .where('userID', '==', friendDocId)
+          .where('date', '==', date)
+          .where('visibleToFriends', '==', true)
+      )
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data = a.payload.doc.data() as Task;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          })
+        )
+      );
   }
 }

@@ -4,7 +4,7 @@ import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';
@@ -49,14 +49,22 @@ export class TaskService {
   createTask(task: Task) {
     return this.authService.currentUser$
       .pipe(
-        map((user) => user.uid),
-        switchMap((userID) =>
-          this.afs.collection<Task>('tasks').add({
-            ...task,
-            userID,
-            date: new Date(task.date),
-          })
-        )
+        map((user) => {
+          if (user) {
+            return user.uid;
+          }
+          return null;
+        }),
+        switchMap((userID) => {
+          if (userID) {
+            return this.afs.collection<Task>('tasks').add({
+              ...task,
+              userID,
+              date: new Date(task.date),
+            });
+          }
+          return of(null);
+        })
       )
       .subscribe();
   }
@@ -151,6 +159,10 @@ export class TaskService {
     currentDate.setMinutes(0);
     currentDate.setHours(12);
     const currentDateInSeconds = Math.floor(currentDate.getTime() / 1000);
+    let currentStreak: number;
+    let highestStreak: number;
+    let latestStreak: number;
+    let userDocId: string;
     return this.userService.getUserDetailsOnce$().pipe(
       map((result) => {
         const streakData = {
@@ -160,32 +172,33 @@ export class TaskService {
         };
         return streakData;
       }),
-      tap(({ currentStreak, highestStreak, userDocId }) => {
-        const latestStreak = currentStreak + 1;
+      switchMap((streakData) => {
+        currentStreak = streakData.currentStreak;
+        highestStreak = streakData.highestStreak;
+        userDocId = streakData.userDocId;
+        latestStreak = currentStreak + 1;
         if (updatedDateOfTask >= currentDateInSeconds) {
-          this.afs
+          return this.afs
             .collection('users')
             .doc(userDocId)
-            .update({ currentStreak: latestStreak })
-            .then(() => {
-              if (latestStreak > highestStreak) {
-                return this.afs
-                  .collection('users')
-                  .doc(userDocId)
-                  .update({ highestStreak: latestStreak });
-              }
-            })
-            .then(() => this.afs.collection('tasks').doc(taskId).delete())
-            .catch((err) => console.log(err));
+            .update({ currentStreak: latestStreak });
         } else {
-          this.afs
+          return this.afs
             .collection('users')
             .doc(userDocId)
-            .update({ currentStreak: 0 })
-            .then(() => this.afs.collection('tasks').doc(taskId).delete())
-            .catch((err) => console.log(err));
+            .update({ currentStreak: 0 });
         }
-      })
+      }),
+      switchMap(() => {
+        if (latestStreak > highestStreak) {
+          return this.afs
+            .collection('users')
+            .doc(userDocId)
+            .update({ highestStreak: latestStreak });
+        }
+        return of(null);
+      }),
+      switchMap(() => this.afs.collection('tasks').doc(taskId).delete())
     );
   }
 }

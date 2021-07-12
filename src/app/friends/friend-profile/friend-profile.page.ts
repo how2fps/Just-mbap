@@ -31,11 +31,4 @@ export class FriendProfilePage implements OnInit {
       )
       .subscribe();
   }
-
-  deleteFriend(userFriendId: string, friendDocId: string) {
-    this.friendsService
-      .deleteFriend(userFriendId, friendDocId)
-      .pipe(tap(() => this.router.navigate(['/tabs', 'friends'])))
-      .subscribe();
-  }
 }
