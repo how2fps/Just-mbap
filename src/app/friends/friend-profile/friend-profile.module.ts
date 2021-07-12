@@ -7,14 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { FriendProfilePageRoutingModule } from './friend-profile-routing.module';
 
 import { FriendProfilePage } from './friend-profile.page';
+import { TimePipeModule } from 'src/app/ngModules/time-pipe-module/time-pipe.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    FriendProfilePageRoutingModule
+    FriendProfilePageRoutingModule,
+    TimePipeModule,
   ],
-  declarations: [FriendProfilePage]
+  declarations: [FriendProfilePage],
 })
 export class FriendProfilePageModule {}

@@ -1,6 +1,9 @@
 <ion-header>
+  <ion-buttons slot="start">
+    <ion-back-button></ion-back-button>
+  </ion-buttons>
   <ion-toolbar>
-    <ion-title>task-form</ion-title>
+    <ion-title>Create Task</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -60,7 +63,7 @@
           </ion-item>
         </ion-col>
       </ion-row>
-      <ion-button type="submit" expand="block" >{{taskForm.invalid ? 'Make sure all fields
+      <ion-button type="submit" expand="block">{{taskForm.invalid ? 'Make sure all fields
         are valid!' :'Create task'}}</ion-button>
     </ion-grid>
   </form>

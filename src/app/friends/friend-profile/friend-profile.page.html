@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
     <ion-title>Friend's Profile</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -17,18 +20,34 @@
         Status: {{userDetails.status}}
       </ion-item>
       <ion-item>
-        Highest streak: {{userDetails.highestStreak}}
+        Highest Streak: {{userDetails.highestStreak}}
       </ion-item>
       <ion-item class="ion-margin-bottom">
-        Current streak: {{userDetails.currentStreak}}
+        Current Streak: {{userDetails.currentStreak}}
       </ion-item>
       <ion-item class="ion-margin-bottom">
-        <ion-label class="label">Friend ID:</ion-label>
-        <ion-badge>
-          {{userDetails.friendId}}
-        </ion-badge>
+        <ion-label class="label">Friend ID: <strong>{{userDetails.friendId}}</strong></ion-label>
       </ion-item>
     </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">
+        Visible Tasks
+      </ion-card-title>
+    </ion-card-header>
+    <ion-list *ngFor="let task of friendTasks">
+      <ion-item>
+        <ion-label>
+          <h2>{{task.title}}</h2>
+          <h3 *ngIf="!task.currentTask">{{task.timeAllocated | time}}</h3>
+          <h3 *ngIf="task.currentTask">Active Task</h3>
+          <p>{{task.description}}</p>
+        </ion-label>
+        <ion-badge>{{task.date.seconds * 1000 | date}}
+        </ion-badge>
+      </ion-item>
+    </ion-list>
   </ion-card>
 </ion-content>
 <ion-spinner *ngIf="isLoading" name="lines" class="fixed-center"></ion-spinner>

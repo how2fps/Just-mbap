@@ -261,12 +261,10 @@ export class FriendsService {
   }
 
   getFriendsVisibleTasks(friendDocId: string) {
-    const date = Date.now();
     return this.afs
       .collection<Task>('tasks', (ref) =>
         ref
           .where('userID', '==', friendDocId)
-          .where('date', '==', date)
           .where('visibleToFriends', '==', true)
       )
       .snapshotChanges()
@@ -274,8 +272,7 @@ export class FriendsService {
         map((actions) =>
           actions.map((a) => {
             const data = a.payload.doc.data() as Task;
-            const id = a.payload.doc.id;
-            return { id, ...data };
+            return data;
           })
         )
       );

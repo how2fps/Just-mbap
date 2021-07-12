@@ -17,16 +17,13 @@
         Status: {{userDetails.res.status}}
       </ion-item>
       <ion-item>
-        Highest streak: {{userDetails.res.highestStreak}}
+        Highest Streak: {{userDetails.res.highestStreak}}
       </ion-item>
       <ion-item class="ion-margin-bottom">
-        Current streak: {{userDetails.res.currentStreak}}
+        Current Streak: {{userDetails.res.currentStreak}}
       </ion-item>
       <ion-item class="ion-margin-bottom">
-        <ion-label class="label">Friend ID:</ion-label>
-        <ion-badge>
-          {{userDetails.res.friendId}}
-        </ion-badge>
+        <ion-label class="label">Friend ID: <strong>{{userDetails.res.friendId}}</strong></ion-label>
       </ion-item>
     </ion-card-content>
     <ion-button class="ion-margin-vertical" expand="block" type="button" color="primary" (click)="goToEditDetails()">
