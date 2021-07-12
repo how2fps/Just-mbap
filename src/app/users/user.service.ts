@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { of } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { UserDetailsFull } from '../models/user.model';
@@ -32,9 +33,16 @@ export class UserService {
 
   getUserDetailsOnce$() {
     return this.authService.currentUser$.pipe(
-      switchMap((userDetails) =>
-        this.afs.collection<UserDetailsFull>('users').doc(userDetails.uid).get()
-      ),
+      switchMap((userDetails) => {
+        if (userDetails) {
+          return this.afs
+            .collection<UserDetailsFull>('users')
+            .doc(userDetails.uid)
+            .get();
+        }
+        return of(null);
+      }),
+      filter((userDetails) => userDetails !== null),
       map((action) => {
         const data = action.data() as UserDetailsFull;
         const id = action.id;

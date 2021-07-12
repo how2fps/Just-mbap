@@ -52,7 +52,7 @@ export class FriendsService {
           if (userDoesNotExist) {
             return of(null);
           }
-          return this.userService.getUserDetails$();
+          return this.userService.getUserDetailsOnce$();
         }),
         switchMap((userDetails: UserDetailsFull | null) => {
           if (!userDetails) {
@@ -113,46 +113,50 @@ export class FriendsService {
       map((actions) =>
         actions.map((a) => {
           const data = a.payload.doc.data() as FriendRequest;
-          return data.senderFriendId;
+          const senderFriendId = data.senderFriendId;
+          const docId = a.payload.doc.id;
+          const friendRequestDetails = { senderFriendId, docId };
+
+          return friendRequestDetails;
         })
       ),
-      switchMap((senderFriendIdArray) =>
+      switchMap((friendRequestsDetails) =>
         combineLatest(
-          senderFriendIdArray.map((senderFriendId) =>
-            this.afs
+          friendRequestsDetails.map((friendRequestDetails) => {
+            const senderFriendId = friendRequestDetails.senderFriendId;
+            const friendRequestDocId = friendRequestDetails.docId;
+            return this.afs
               .collection('users', (ref) =>
                 ref.where('friendId', '==', senderFriendId)
               )
-              .snapshotChanges()
+              .get()
               .pipe(
-                map((actions) =>
-                  actions.map((a) => {
-                    const data = a.payload.doc.data() as UserDetailsFull;
-                    const displayName = data.displayName;
-                    const friendRequestId = a.payload.doc.id;
-                    const friendDetails = { displayName, friendRequestId };
-                    return friendDetails;
-                  })
-                )
-              )
-          )
+                map((a) => {
+                  const data = a.docs[0].data() as UserDetailsFull;
+                  const displayName = data.displayName;
+                  const friendDetails = { displayName, friendRequestDocId };
+                  return friendDetails;
+                })
+              );
+          })
         )
       ),
       map((result) => {
-        const displayNameArray: {
+        const friendRequestDetailsArray: {
           displayName: string;
-          friendRequestId: string;
+          friendRequestDocId: string;
         }[] = [];
-        result.forEach((res) => displayNameArray.push(res[0]));
-        return displayNameArray;
+        result.forEach((res) => friendRequestDetailsArray.push(res));
+        return friendRequestDetailsArray;
       })
     );
   }
 
   acceptFriendRequest(friendRequestId: string) {}
+
   declineFriendRequest(friendRequestId: string) {
     return from(
-      this.afs.collection('friendsRequest').doc(friendRequestId).delete()
+      this.afs.collection('friendRequests').doc(friendRequestId).delete()
     );
   }
 }

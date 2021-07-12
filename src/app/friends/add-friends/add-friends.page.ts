@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoadingController, ToastController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
 import { FriendRequest } from 'src/app/models/friend-request.model';
 import { FriendsService } from '../friends.service';
 
@@ -11,11 +11,10 @@ import { FriendsService } from '../friends.service';
   templateUrl: './add-friends.page.html',
   styleUrls: ['./add-friends.page.scss'],
 })
-export class AddFriendsPage implements OnInit {
+export class AddFriendsPage implements OnInit, OnDestroy {
   addFriendForm: FormGroup;
-  friendRequestDetails$: Observable<
-    { displayName: string; friendRequestId: string }[]
-  >;
+  subscriptionArray: Subscription[] = [];
+  friendRequests: { displayName: string; friendRequestDocId: string }[];
   constructor(
     private friendsService: FriendsService,
     private loadingController: LoadingController,
@@ -24,7 +23,16 @@ export class AddFriendsPage implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.friendRequestDetails$ = this.friendsService.getAllFriendRequests();
+    const subscription = this.friendsService
+      .getAllFriendRequests()
+      .pipe(tap((friendRequests) => (this.friendRequests = friendRequests)))
+      .subscribe(() => this.subscriptionArray.push(subscription));
+  }
+
+  ngOnDestroy() {
+    this.subscriptionArray.forEach((subscription) =>
+      subscription.unsubscribe()
+    );
   }
 
   initForm() {
@@ -36,19 +44,34 @@ export class AddFriendsPage implements OnInit {
     });
   }
 
-  acceptFriendRequest(friendRequestId: string) {
+  acceptFriendRequest(friendRequestId: string, displayName: string) {
     this.friendsService.acceptFriendRequest(friendRequestId);
   }
 
-  declineFriendRequest(friendRequestId: string) {
-    this.friendsService.declineFriendRequest(friendRequestId).subscribe();
+  declineFriendRequest(friendRequestId: string, displayName: string) {
+    const subscription = this.friendsService
+      .declineFriendRequest(friendRequestId)
+      .pipe(
+        tap(() => {
+          this.friendRequests = this.friendRequests.filter(
+            (results) => results.friendRequestDocId !== friendRequestId
+          );
+          this.toastController
+            .create({
+              message: 'Declined friend request',
+              duration: 2000,
+            })
+            .then((toast) => toast.present());
+        })
+      )
+      .subscribe(() => this.subscriptionArray.push(subscription));
   }
 
   onSubmit() {
     this.loadingController.create().then((loader) => {
       loader.present();
       const friendId = this.addFriendForm.value.friendId;
-      this.friendsService
+      const subscription = this.friendsService
         .sendFriendRequest(friendId)
         .pipe(
           tap((result) => {
@@ -70,7 +93,7 @@ export class AddFriendsPage implements OnInit {
               .then((toast) => toast.present());
           })
         )
-        .subscribe();
+        .subscribe(() => this.subscriptionArray.push(subscription));
     });
   }
 }

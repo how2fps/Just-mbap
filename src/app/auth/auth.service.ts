@@ -69,7 +69,6 @@ export class AuthService {
         this.fireAuth
           .signOut()
           .then(() => {
-            console.log('Sign out');
             resolve();
           })
           .catch(() => {
