@@ -13,7 +13,9 @@ import { FriendsService } from '../friends.service';
 })
 export class AddFriendsPage implements OnInit {
   addFriendForm: FormGroup;
-  friendRequestDisplayNames$: Observable<string[]>;
+  friendRequestDetails$: Observable<
+    { displayName: string; friendRequestId: string }[]
+  >;
   constructor(
     private friendsService: FriendsService,
     private loadingController: LoadingController,
@@ -22,8 +24,7 @@ export class AddFriendsPage implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.friendRequestDisplayNames$ =
-      this.friendsService.getAllFriendRequests();
+    this.friendRequestDetails$ = this.friendsService.getAllFriendRequests();
   }
 
   initForm() {
@@ -33,6 +34,14 @@ export class AddFriendsPage implements OnInit {
         Validators.minLength(4),
       ]),
     });
+  }
+
+  acceptFriendRequest(friendRequestId: string) {
+    this.friendsService.acceptFriendRequest(friendRequestId);
+  }
+
+  declineFriendRequest(friendRequestId: string) {
+    this.friendsService.declineFriendRequest(friendRequestId).subscribe();
   }
 
   onSubmit() {

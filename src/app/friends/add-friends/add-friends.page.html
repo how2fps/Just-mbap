@@ -16,10 +16,18 @@
       </ion-button>
     </ion-grid>
   </form>
-  <ion-list *ngFor="let friendRequestDisplayName of friendRequestDisplayNames$ | async">
+  <ion-list *ngFor="let friendRequestDetails of friendRequestDetails$ | async">
     <ion-item>
       <ion-label>
-        <h2>{{friendRequestDisplayName}}</h2>
+        <h2>{{friendRequestDetails.displayName}}</h2>
+        <ion-chip color="success" (click)="acceptFriendRequest(friendRequestDetails.friendRequestId)">
+          <ion-label>Accept</ion-label>
+          <ion-icon name="checkmark"></ion-icon>
+        </ion-chip>
+        <ion-chip color="danger" (click)="declineFriendRequest(friendRequestDetails.friendRequestId)">
+          <ion-label>Decline</ion-label>
+          <ion-icon name="close"></ion-icon>
+        </ion-chip>
       </ion-label>
     </ion-item>
   </ion-list>
