@@ -18,6 +18,15 @@
       </ion-text>
     </ion-item>
     <ion-item>
+      <ion-label position="stacked" class="label">Visible to friends:
+      </ion-label>
+      <ion-text style="text-align: center; width: 100%;">
+        <h3 style="font-size: 30px;">{{taskDetails.visibleToFriends ? 'Yes' : 'No'}}</h3>
+      </ion-text>
+    </ion-item>
+  </ion-card>
+  <ion-card>
+    <ion-item>
       <ion-label position="stacked" class="label">Remaining time:</ion-label>
       <ion-text>
         <h3 *ngIf="taskDetails.timeAllocated >= 0">{{taskDetails.timeAllocated | time}}</h3>

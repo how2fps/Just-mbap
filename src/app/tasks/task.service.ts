@@ -4,7 +4,7 @@ import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, from, of } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';
@@ -202,13 +202,17 @@ export class TaskService {
     );
   }
 
-  editTask(taskDocId: string, updatedTaskDetails: Task) {
+  editTask(taskDocId: string, updatedTaskDetails: Task, currentTask: boolean) {
     console.log(taskDocId);
     console.log(updatedTaskDetails);
-    return this.afs
-      .collection('tasks')
-      .doc(taskDocId)
-      .update({ updatedTaskDetails });
+    if (currentTask) {
+      window.localStorage.clear();
+    }
+    return from(
+      this.afs.collection('tasks').doc(taskDocId).update(updatedTaskDetails)
+    );
   }
-  deleteTask(taskDocId: string) {}
+  deleteTask(taskDocId: string) {
+    return from(this.afs.collection('tasks').doc(taskDocId).delete());
+  }
 }

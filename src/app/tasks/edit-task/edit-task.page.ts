@@ -24,6 +24,7 @@ export class EditTaskPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.initForm();
     this.route.paramMap
       .pipe(
         map((paramMap) => {
@@ -33,7 +34,7 @@ export class EditTaskPage implements OnInit {
         switchMap((id) => this.taskService.getTaskDetails(id)),
         tap((taskDetails) => {
           this.currentTask = taskDetails.currentTask;
-          const date = (<any>taskDetails.date).toDate();
+          const date = (taskDetails.date as any).toDate();
           let day = date.getDate();
           let month = date.getMonth() + 1;
           const year = date.getFullYear();
@@ -62,9 +63,8 @@ export class EditTaskPage implements OnInit {
         })
       )
       .subscribe();
-    this.initForm();
   }
-  //yyyy mm dd
+
   initForm() {
     this.taskForm = new FormGroup({
       title: new FormControl('', Validators.required),
@@ -97,7 +97,7 @@ export class EditTaskPage implements OnInit {
           visibleToFriends: formValues.visibleToFriends,
           currentTask: this.currentTask,
         };
-        return this.taskService.editTask(this.taskDocId, updatedTask);
+        return this.taskService.editTask(this.taskDocId, updatedTask, this.currentTask);
       })
       .then(() => {
         this.router.navigate(['']);

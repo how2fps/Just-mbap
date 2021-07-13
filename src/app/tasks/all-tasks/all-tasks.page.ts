@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
 import { TaskService } from '../task.service';
 
@@ -48,5 +48,8 @@ export class AllTasksPage {
   editTask(taskDocId: string) {
     this.router.navigate(['/edit-task', taskDocId]);
   }
-  deleteTask(taskDocId: string) {}
+  deleteTask(taskDocId: string) {
+    console.log('ugud?');
+    this.taskService.deleteTask(taskDocId).pipe(tap(() => {}));
+  }
 }

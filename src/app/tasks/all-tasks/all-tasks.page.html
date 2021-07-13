@@ -33,8 +33,8 @@
     <ion-item-sliding>
       <ion-item [color]="task.currentTask ? 'primary' : ''" (click)="onTaskClick(task.id)">
         <ion-label>
-          <h2>{{task.title}}</h2>
-          <p>{{task.description}}</p>
+          <h2>Title: {{task.title}}</h2>
+          <p>Description: {{task.description}}</p>
         </ion-label>
         <ion-badge [color]="task.currentTask ? 'light' : 'primary'">
           {{task.currentTask ? 'Active' : task.timeAllocated | time}}

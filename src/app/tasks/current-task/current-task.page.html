@@ -17,15 +17,24 @@
       </ion-text>
     </ion-item>
     <ion-item>
-      <ion-label position="stacked" class="label">Remaining time:</ion-label>
+      <ion-label position="stacked" class="label">Visible to friends:
+      </ion-label>
       <ion-text>
-        <h3 *ngIf="timeAllocated !>= 0">{{timeAllocated | time}}</h3>
+        <h3>{{taskDetails.visibleToFriends ? 'Yes' : 'No'}}</h3>
+      </ion-text>
+    </ion-item>
+  </ion-card>
+  <ion-card>
+    <ion-item>
+      <ion-label position="stacked" class="label">Remaining time:</ion-label>
+      <ion-text style="text-align: center; width: 100%;">
+        <h3 style="font-size: 30px;" *ngIf="timeAllocated !>= 0">{{timeAllocated | time}}</h3>
       </ion-text>
     </ion-item>
   </ion-card>
   <ion-button [color]="timerRunning? 'danger' : 'success'" class="ion-margin-top" expand="block" type="button"
     (click)="timerRunning ? stopTimer() : startTimer()">
-    {{timerRunning ? 'Pause Task' : 'Start Task'}}
+    {{timerRunning ? 'Pause Timer' : 'Start Timer'}}
   </ion-button>
   <ion-button color="primary" class="ion-margin-top" expand="block" type="button"
     (click)="completeTask(taskDetails.id,taskDetails.date)">
