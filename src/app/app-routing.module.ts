@@ -83,11 +83,16 @@ const routes: Routes = [
       ),
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
-  },  {
-    path: 'edit-task',
-    loadChildren: () => import('./tasks/edit-task/edit-task.module').then( m => m.EditTaskPageModule)
   },
-
+  {
+    path: 'edit-task/:id',
+    loadChildren: () =>
+      import('./tasks/edit-task/edit-task.module').then(
+        (m) => m.EditTaskPageModule
+      ),
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: () => redirectUnauthorizedTo(['login']) },
+  },
 ];
 
 @NgModule({

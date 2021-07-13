@@ -46,9 +46,7 @@ export class AllTasksPage {
   }
 
   editTask(taskDocId: string) {
-    this.taskService.editTask(taskDocId);
+    this.router.navigate(['/edit-task', taskDocId]);
   }
-  deleteTask(taskDocId: string) {
-    this.taskService.deleteTask(taskDocId);
-  }
+  deleteTask(taskDocId: string) {}
 }

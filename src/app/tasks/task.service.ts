@@ -202,6 +202,13 @@ export class TaskService {
     );
   }
 
-  editTask(taskDocId: string) {}
+  editTask(taskDocId: string, updatedTaskDetails: Task) {
+    console.log(taskDocId);
+    console.log(updatedTaskDetails);
+    return this.afs
+      .collection('tasks')
+      .doc(taskDocId)
+      .update({ updatedTaskDetails });
+  }
   deleteTask(taskDocId: string) {}
 }
