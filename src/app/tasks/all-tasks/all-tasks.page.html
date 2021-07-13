@@ -34,17 +34,18 @@
       <ion-item [color]="task.currentTask ? 'primary' : ''" (click)="onTaskClick(task.id)">
         <ion-label>
           <h2>{{task.title}}</h2>
-          <h3 *ngIf="!task.currentTask">{{task.timeAllocated | time}}</h3>
-          <h3 *ngIf="task.currentTask">Active Task</h3>
           <p>{{task.description}}</p>
         </ion-label>
+        <ion-badge [color]="task.currentTask ? 'light' : 'primary'">
+          {{task.currentTask ? 'Active' : task.timeAllocated | time}}
+        </ion-badge>
       </ion-item>
       <ion-item-options>
-        <ion-item-option color="secondary">
-          <ion-icon slot="start" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+        <ion-item-option color="warning" (click)="editTask(task.id)">
+          <ion-icon slot="start" name="clipboard"></ion-icon>
           Edit
         </ion-item-option>
-        <ion-item-option color="danger">
+        <ion-item-option color="danger" (click)="deleteTask(task.id)">
           <ion-icon slot="start" name="archive"></ion-icon>
           Delete
         </ion-item-option>

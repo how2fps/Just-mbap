@@ -44,4 +44,11 @@ export class AllTasksPage {
   onTaskClick(id: string) {
     this.router.navigate(['task-details', id]);
   }
+
+  editTask(taskDocId: string) {
+    this.taskService.editTask(taskDocId);
+  }
+  deleteTask(taskDocId: string) {
+    this.taskService.deleteTask(taskDocId);
+  }
 }

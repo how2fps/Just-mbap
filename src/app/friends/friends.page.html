@@ -17,6 +17,9 @@
           <h2>{{friend.displayName}}</h2>
           <h3>Status: {{friend.status}}</h3>
         </ion-label>
+        <ion-badge>
+          Current streak: {{friend.currentStreak}}
+        </ion-badge>
       </ion-item>
       <ion-item-options>
         <ion-item-option color="danger" (click)="deleteFriend(friend.friendId, friend.docId, friend.displayName)">

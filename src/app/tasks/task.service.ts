@@ -201,4 +201,7 @@ export class TaskService {
       switchMap(() => this.afs.collection('tasks').doc(taskId).delete())
     );
   }
+
+  editTask(taskDocId: string) {}
+  deleteTask(taskDocId: string) {}
 }
