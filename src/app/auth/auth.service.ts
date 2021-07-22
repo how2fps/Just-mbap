@@ -103,6 +103,35 @@ export class AuthService {
       });
   }
 
+  async loginWithGoogle() {
+    const result = await this.fireAuth.signInWithPopup(
+      new firebase.auth.GoogleAuthProvider()
+    );
+    const userDetails = result.user;
+    const uid = userDetails.uid;
+    const email = userDetails.email;
+    const displayName = userDetails.displayName;
+    console.log('uid', uid);
+    const uidExists = await this.afs
+      .collection('users')
+      .doc(uid)
+      .get()
+      .toPromise();
+    if (!uidExists.data()) {
+      const friendId = await this.generateFriendId();
+      await this.afs.collection('users').doc(uid).set({
+        email,
+        displayName,
+        status: '...',
+        currentStreak: 0,
+        highestStreak: 0,
+        friends: [],
+        friendId,
+      });
+    }
+    this.router.navigate(['']);
+  }
+
   private generateRandomThreeLetters() {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     return (

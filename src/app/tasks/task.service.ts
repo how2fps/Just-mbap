@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   AngularFirestore,
@@ -8,6 +9,7 @@ import { BehaviorSubject, from, of } from 'rxjs';
 import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Task } from '../models/task.model';
+import { Quote } from '../models/quote.model';
 import { UserService } from '../users/user.service';
 
 @Injectable({
@@ -22,7 +24,8 @@ export class TaskService {
   constructor(
     private afs: AngularFirestore,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private http: HttpClient
   ) {}
 
   getTasksByDate(date: Date) {
@@ -214,5 +217,11 @@ export class TaskService {
   }
   deleteTask(taskDocId: string) {
     return from(this.afs.collection('tasks').doc(taskDocId).delete());
+  }
+
+  getRandomQuote() {
+    return this.http.get<Quote>(
+      'https://api.quotable.io/random?tags=inspirational'
+    );
   }
 }

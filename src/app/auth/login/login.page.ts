@@ -56,6 +56,10 @@ export class LoginPage implements OnInit {
     });
   }
 
+  loginWithGoogle() {
+    this.authService.loginWithGoogle();
+  }
+
   goToSignUp() {
     this.router.navigate(['/signup']);
   }

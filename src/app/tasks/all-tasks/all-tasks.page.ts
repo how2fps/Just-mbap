@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
@@ -22,7 +23,11 @@ export class AllTasksPage {
   currentDateSub: Subscription;
   currentDate = new Date();
 
-  constructor(private taskService: TaskService, private router: Router) {
+  constructor(
+    private taskService: TaskService,
+    private router: Router,
+    private toastController: ToastController
+  ) {
     this.tasks$ = this.taskService.currentDate$.pipe(
       switchMap((date) => this.taskService.getTasksByDate(date))
     );
@@ -51,5 +56,21 @@ export class AllTasksPage {
   deleteTask(taskDocId: string) {
     console.log('ugud?');
     this.taskService.deleteTask(taskDocId).pipe(tap(() => {}));
+  }
+
+  getRandomQuote() {
+    this.taskService
+      .getRandomQuote()
+      .pipe(
+        tap((result) => {
+          this.toastController
+            .create({
+              message: result.content,
+              duration: 10000,
+            })
+            .then((toast) => toast.present());
+        })
+      )
+      .subscribe();
   }
 }
