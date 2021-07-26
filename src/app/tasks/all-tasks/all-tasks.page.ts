@@ -67,6 +67,13 @@ export class AllTasksPage {
             .create({
               message: result.content,
               duration: 10000,
+              position: 'top',
+              buttons: [
+                {
+                  text: 'X',
+                  role: 'cancel',
+                },
+              ],
             })
             .then((toast) => toast.present());
         })

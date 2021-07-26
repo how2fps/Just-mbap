@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     appId: '1:124548983096:web:e93f388f9c3ba76d7eb9cd',
     measurementId: 'G-7374TN4T25',
   };
+
   constructor(private authService: AuthService) {}
 
   ngOnInit() {

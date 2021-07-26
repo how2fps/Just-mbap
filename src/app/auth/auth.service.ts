@@ -104,10 +104,9 @@ export class AuthService {
   }
 
   async loginWithGoogle() {
-    const result = await this.fireAuth.signInWithPopup(
-      new firebase.auth.GoogleAuthProvider()
-    );
-    const userDetails = result.user;
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await this.fireAuth.signInWithRedirect(provider);
+    const userDetails = (await firebase.auth().getRedirectResult()).user;
     const uid = userDetails.uid;
     const email = userDetails.email;
     const displayName = userDetails.displayName;
