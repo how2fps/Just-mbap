@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "124548983096",
+    "firebase_url": "https://just-mbap-project-part2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "just-mbap-project-part2",
+    "storage_bucket": "just-mbap-project-part2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124548983096:android:8ce848507ebaf4937eb9cd",
+        "android_client_info": {
+          "package_name": "com.finn.just"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "124548983096-6jjd1hu6u5da2p07mdmpr4sr533na378.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh1zt_sKPr0uk-gsrRQdULB_XFQaGl7DE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "124548983096-6jjd1hu6u5da2p07mdmpr4sr533na378.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
