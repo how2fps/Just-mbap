@@ -13,11 +13,12 @@ import { UserService } from '../user.service';
 export class EditProfilePage implements OnInit {
   userId: string;
   editProfileForm: FormGroup;
+
   constructor(
     private userService: UserService,
     private loadingController: LoadingController,
     private toastController: ToastController,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {

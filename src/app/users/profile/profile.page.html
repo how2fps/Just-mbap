@@ -7,6 +7,9 @@
 <ion-content *ngIf="userDetails$ | async as userDetails" class="ion-padding">
   <ion-card class="ion-padding" *ngIf="!userDetails.loading">
     <img src="https://via.placeholder.com/150" />
+    <ion-button class="ion-margin-vertical" expand="block" type="button" color="primary" (click)="goToEditDetails()">
+      Change Profile Picture
+    </ion-button>
     <ion-card-header>
       <ion-card-title class="ion-text-center">
         {{userDetails.res.displayName}}
