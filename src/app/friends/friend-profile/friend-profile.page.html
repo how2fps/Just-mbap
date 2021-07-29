@@ -9,7 +9,11 @@
 
 <ion-content *ngIf="userDetails && !isLoading" class="ion-padding">
   <ion-card class="ion-padding">
-    <img src="https://via.placeholder.com/150" />
+    <ion-grid class="ion-text-center ion-justify-content-center ion-align-items-center">
+      <img *ngIf="profilePicUrl" [src]="profilePicUrl" />
+      <p class="ion-text-center" *ngIf="!profilePicUrl">User has not set a profile
+        picture!</p>
+    </ion-grid>
     <ion-card-header>
       <ion-card-title class="ion-text-center">
         {{userDetails.displayName}}

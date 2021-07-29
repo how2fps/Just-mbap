@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { of, Subscription } from 'rxjs';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { Task } from 'src/app/models/task.model';
 import { UserDetailsFull } from 'src/app/models/user.model';
 import { FriendsService } from '../friends.service';
@@ -16,9 +17,11 @@ export class FriendProfilePage implements OnInit, OnDestroy {
   friendTasks: Task[];
   isLoading = true;
   subscription: Subscription;
+  profilePicUrl: string;
   constructor(
     private friendsService: FriendsService,
     private route: ActivatedRoute,
+    private storage: AngularFireStorage
   ) {}
 
   ngOnInit() {
@@ -38,6 +41,15 @@ export class FriendProfilePage implements OnInit, OnDestroy {
         switchMap(() => this.friendsService.getFriendsVisibleTasks(friendId)),
         tap((tasks) => {
           this.friendTasks = tasks;
+        }),
+        switchMap(() => {
+          const ref = this.storage.ref('Images/' + friendId);
+          return ref.getDownloadURL();
+        }),
+        tap((profilePicUrl) => (this.profilePicUrl = profilePicUrl)),
+        catchError((err) => {
+          this.profilePicUrl = null;
+          return of(null);
         })
       )
       .subscribe();

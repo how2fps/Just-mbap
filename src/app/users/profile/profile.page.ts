@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../user.service';
 
@@ -10,18 +11,30 @@ import { UserService } from '../user.service';
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage {
   userDetails$: Observable<any>;
+  profilePicUrl: Observable<any>;
   constructor(
     private authService: AuthService,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private storage: AngularFireStorage
   ) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.userDetails$ = this.userService.getUserDetails$().pipe(
       map((res) => ({ res, loading: false })),
       startWith({ res: undefined, loading: true })
+    );
+    this.profilePicUrl = this.authService.currentUser$.pipe(
+      map((result) => result.uid),
+      switchMap((userId) => {
+        const ref = this.storage.ref('Images/' + userId);
+        return ref.getDownloadURL();
+      }),
+      map((res) => ({ res, loading: false })),
+      startWith({ res: undefined, loading: true }),
+      catchError((err) => of({ res: undefined, loading: false }))
     );
   }
 

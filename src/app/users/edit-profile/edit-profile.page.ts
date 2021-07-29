@@ -8,9 +8,17 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { combineLatest, Observable, of } from 'rxjs';
-import { tap, finalize, catchError } from 'rxjs/operators';
+import {
+  tap,
+  finalize,
+  catchError,
+  map,
+  switchMap,
+  startWith,
+} from 'rxjs/operators';
 import { UserService } from '../user.service';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
+import { UploadTaskSnapshot } from '@angular/fire/storage/interfaces';
 
 @Component({
   selector: 'app-edit-profile',
@@ -22,6 +30,7 @@ export class EditProfilePage implements OnInit {
   editProfileForm: FormGroup;
   base64Image: string;
   downloadURL: Observable<string>;
+  initialPictureURL: Observable<any>;
 
   constructor(
     private userService: UserService,
@@ -35,18 +44,23 @@ export class EditProfilePage implements OnInit {
 
   ngOnInit() {
     this.initForm();
-    this.userService
-      .getUserDetailsOnce$()
-      .pipe(
-        tap((userDetails) => {
-          this.userId = userDetails.id;
-          this.editProfileForm.controls.displayName.setValue(
-            userDetails.displayName
-          );
-          this.editProfileForm.controls.status.setValue(userDetails.status);
-        })
-      )
-      .subscribe();
+    this.initialPictureURL = this.userService.getUserDetailsOnce$().pipe(
+      tap((userDetails) => {
+        this.userId = userDetails.id;
+        this.editProfileForm.controls.displayName.setValue(
+          userDetails.displayName
+        );
+        this.editProfileForm.controls.status.setValue(userDetails.status);
+      }),
+      map((userDetails) => userDetails.id),
+      switchMap((userId) => {
+        const ref = this.storage.ref('Images/' + userId);
+        return ref.getDownloadURL();
+      }),
+      map((res) => ({ res, loading: false })),
+      startWith({ res: undefined, loading: true }),
+      catchError(() => of({ res: null, loading: false }))
+    );
   }
   async changeProfilePictureActionSheet() {
     const actionSheet = await this.actionSheetController.create({
@@ -83,8 +97,6 @@ export class EditProfilePage implements OnInit {
       sourceType,
     };
     this.camera.getPicture(options).then((imageData) => {
-      // imageData is either a base64 encoded string or a file URI
-      // If it's base64 (DATA_URL):
       this.base64Image = 'data:image/jpeg;base64,' + imageData;
     });
   }
@@ -103,7 +115,6 @@ export class EditProfilePage implements OnInit {
   }
   base64ToImage(dataURI) {
     const fileDate = dataURI.split(',');
-    // const mime = fileDate[0].match(/:(.*?);/)[1];
     const byteString = atob(fileDate[1]);
     const arrayBuffer = new ArrayBuffer(byteString.length);
     const int8Array = new Uint8Array(arrayBuffer);
@@ -120,8 +131,14 @@ export class EditProfilePage implements OnInit {
         this.editProfileForm.controls.displayName.value;
       const updatedStatus = this.editProfileForm.controls.status.value;
       loader.present();
+      let savePictureFunction: Observable<UploadTaskSnapshot | null>;
+      if (this.base64Image) {
+        savePictureFunction = this.savePicture();
+      } else {
+        savePictureFunction = of(null);
+      }
       combineLatest([
-        this.savePicture(),
+        savePictureFunction,
         this.userService.updateNameAndStatus(
           this.userId,
           updatedDisplayName,
