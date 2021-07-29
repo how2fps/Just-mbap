@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { of } from 'rxjs';
+import { from, of } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { UserDetailsFull } from '../models/user.model';
@@ -52,9 +52,11 @@ export class UserService {
   }
 
   updateNameAndStatus(userId: string, name: string, status: string) {
-    return this.afs
-      .collection('users')
-      .doc(userId)
-      .update({ displayName: name, status });
+    return from(
+      this.afs
+        .collection('users')
+        .doc(userId)
+        .update({ displayName: name, status })
+    );
   }
 }

@@ -1,9 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoadingController, ToastController } from '@ionic/angular';
-import { tap } from 'rxjs/operators';
+import {
+  ActionSheetController,
+  LoadingController,
+  ToastController,
+} from '@ionic/angular';
+import { combineLatest, Observable, of } from 'rxjs';
+import { tap, finalize, catchError } from 'rxjs/operators';
 import { UserService } from '../user.service';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 @Component({
   selector: 'app-edit-profile',
@@ -13,12 +20,17 @@ import { UserService } from '../user.service';
 export class EditProfilePage implements OnInit {
   userId: string;
   editProfileForm: FormGroup;
+  base64Image: string;
+  downloadURL: Observable<string>;
 
   constructor(
     private userService: UserService,
     private loadingController: LoadingController,
     private toastController: ToastController,
     private router: Router,
+    private camera: Camera,
+    private storage: AngularFireStorage,
+    private actionSheetController: ActionSheetController
   ) {}
 
   ngOnInit() {
@@ -36,12 +48,70 @@ export class EditProfilePage implements OnInit {
       )
       .subscribe();
   }
+  async changeProfilePictureActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Change profile picture through: ',
+      buttons: [
+        {
+          text: 'Camera',
+          icon: 'camera-outline',
+          handler: () => this.takeProfilePicture(1),
+        },
+        {
+          text: 'Album',
+          icon: 'image-outline',
+          handler: () => this.takeProfilePicture(0),
+        },
+        { text: 'Cancel', role: 'cancel', icon: 'close' },
+      ],
+    });
+    actionSheet.present();
+  }
 
   initForm() {
     this.editProfileForm = new FormGroup({
       displayName: new FormControl('', Validators.required),
       status: new FormControl(''),
     });
+  }
+  takeProfilePicture(sourceType: number) {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType,
+    };
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      this.base64Image = 'data:image/jpeg;base64,' + imageData;
+    });
+  }
+  savePicture() {
+    const file: any = this.base64ToImage(this.base64Image);
+    const filePath = `Images/${this.userId}`;
+    const fileRef = this.storage.ref(filePath);
+
+    const task = this.storage.upload(`Images/${this.userId}`, file);
+    return task.snapshotChanges().pipe(
+      finalize(() => {
+        this.downloadURL = fileRef.getDownloadURL();
+        this.downloadURL.subscribe();
+      })
+    );
+  }
+  base64ToImage(dataURI) {
+    const fileDate = dataURI.split(',');
+    // const mime = fileDate[0].match(/:(.*?);/)[1];
+    const byteString = atob(fileDate[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const int8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      int8Array[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([arrayBuffer], { type: 'image/png' });
+    return blob;
   }
 
   onSubmit() {
@@ -50,28 +120,38 @@ export class EditProfilePage implements OnInit {
         this.editProfileForm.controls.displayName.value;
       const updatedStatus = this.editProfileForm.controls.status.value;
       loader.present();
-      this.userService
-        .updateNameAndStatus(this.userId, updatedDisplayName, updatedStatus)
-        .then(() => {
-          this.editProfileForm.reset();
-          loader.dismiss();
-          this.router.navigate(['/tabs', 'profile']);
-          this.toastController
-            .create({
-              message: 'Details successfully edited.',
-              duration: 2000,
-            })
-            .then((toast) => toast.present());
-        })
-        .catch((err) => {
-          loader.dismiss();
-          this.toastController
-            .create({
-              message: err.message,
-              duration: 2000,
-            })
-            .then((toast) => toast.present());
-        });
+      combineLatest([
+        this.savePicture(),
+        this.userService.updateNameAndStatus(
+          this.userId,
+          updatedDisplayName,
+          updatedStatus
+        ),
+      ])
+        .pipe(
+          tap(() => {
+            this.editProfileForm.reset();
+            loader.dismiss();
+            this.router.navigate(['/tabs', 'profile']);
+            this.toastController
+              .create({
+                message: 'Details successfully edited.',
+                duration: 2000,
+              })
+              .then((toast) => toast.present());
+          }),
+          catchError((err) => {
+            loader.dismiss();
+            this.toastController
+              .create({
+                message: err.message,
+                duration: 2000,
+              })
+              .then((toast) => toast.present());
+            return of(null);
+          })
+        )
+        .subscribe();
     });
   }
 }

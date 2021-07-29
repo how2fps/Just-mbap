@@ -10,6 +10,9 @@
 <ion-content>
   <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()">
     <ion-grid>
+      <img *ngIf="base64Image" [src]="base64Image" />
+      <ion-button class="ion-margin-vertical" expand="block" type="button" (click)="changeProfilePictureActionSheet()">
+        Change Profile Picture</ion-button>
       <ion-row>
         <ion-col size="12">
           <ion-item>

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { Camera } from '@ionic-native/camera/ngx';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
@@ -20,7 +21,7 @@ import { AppComponent } from './app.component';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, Camera],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
