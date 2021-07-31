@@ -2,8 +2,11 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import {
   AngularFireAuthGuard,
+  redirectLoggedInTo,
   redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
+
+const redirectLoggedInToTasks = () => redirectLoggedInTo(['tabs/tasks']);
 
 const routes: Routes = [
   {
@@ -15,6 +18,8 @@ const routes: Routes = [
   },
   {
     path: 'login',
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectLoggedInToTasks },
     loadChildren: () =>
       import('./auth/login/login.module').then((m) => m.LoginPageModule),
   },

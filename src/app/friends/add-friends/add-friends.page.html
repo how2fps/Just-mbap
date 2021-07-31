@@ -36,4 +36,7 @@
       </ion-label>
     </ion-item>
   </ion-list>
+  <ion-text *ngIf="!friendRequests || friendRequests.length === 0" class="ion-text-center">
+    <p>You have no friend requests. Send some now!</p>
+  </ion-text>
 </ion-content>

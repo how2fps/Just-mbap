@@ -6,13 +6,13 @@
 
 <ion-content *ngIf="userDetails$ | async as userDetails" class="ion-padding">
   <ion-card class="ion-padding" *ngIf="!userDetails.loading">
-    <ion-grid class="ion-text-center ion-justify-content-center ion-align-items-center">
-      <ion-item *ngIf="profilePicUrl | async as profilePicUrl">
-        <img *ngIf="profilePicUrl.res && !profilePicUrl.loading" [src]="profilePicUrl.res" />
-        <ion-spinner *ngIf="profilePicUrl.loading" name="lines" class="fixed-center"></ion-spinner>
-        <p class="ion-text-center" *ngIf="!profilePicUrl.res && !profilePicUrl.loading">You have not set a profile
-          picture!</p>
-      </ion-item>
+    <ion-grid *ngIf="profilePicUrl | async as profilePicUrl"
+      style="height: 275px; max-width: 300px; border: grey 2px solid; border-radius: 5px; display: flex; justify-content: center; align-items: center;"
+      class="ion-text-center">
+      <img *ngIf="profilePicUrl.res && !profilePicUrl.loading" [src]="profilePicUrl.res"
+        style="width: 100%; height: 100%; object-fit: cover;" />
+      <p *ngIf="!profilePicUrl.res && !profilePicUrl.loading">You have not set a profile
+        picture!</p>
     </ion-grid>
 
     <ion-card-header>

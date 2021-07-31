@@ -63,15 +63,16 @@ export class AuthService {
   }
 
   logout() {
-    this.router.navigate(['/login']);
     return new Promise<void>((resolve, reject) => {
       if (this.fireAuth.currentUser) {
         this.fireAuth
           .signOut()
           .then(() => {
+            this.router.navigate(['/login']);
             resolve();
           })
           .catch(() => {
+            this.router.navigate(['/login']);
             reject();
           });
       }

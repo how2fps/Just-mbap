@@ -29,4 +29,7 @@
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>
+  <ion-text *ngIf="!friends || friends.length === 0" class="ion-text-center">
+    <p>You have no one in your friendlist. Add some now!</p>
+  </ion-text>
 </ion-content>

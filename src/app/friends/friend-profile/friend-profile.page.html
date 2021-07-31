@@ -9,9 +9,11 @@
 
 <ion-content *ngIf="userDetails && !isLoading" class="ion-padding">
   <ion-card class="ion-padding">
-    <ion-grid class="ion-text-center ion-justify-content-center ion-align-items-center">
-      <img *ngIf="profilePicUrl" [src]="profilePicUrl" />
-      <p class="ion-text-center" *ngIf="!profilePicUrl">User has not set a profile
+    <ion-grid
+      style="height: 275px; max-width: 300px; border: grey 2px solid; border-radius: 5px; display: flex; justify-content: center; align-items: center;"
+      class="ion-text-center">
+      <img *ngIf="profilePicUrl" [src]="profilePicUrl" style="width: 100%; height: 100%; object-fit: cover;" />
+      <p *ngIf="!profilePicUrl">User has not set a profile
         picture!</p>
     </ion-grid>
     <ion-card-header>
@@ -52,6 +54,7 @@
         </ion-badge>
       </ion-item>
     </ion-list>
+    <p class="ion-text-center" *ngIf="!friendTasks || friendTasks.length === 0">No visible tasks.</p>
   </ion-card>
 </ion-content>
 <ion-spinner *ngIf="isLoading" name="lines" class="fixed-center"></ion-spinner>

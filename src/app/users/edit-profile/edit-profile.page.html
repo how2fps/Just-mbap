@@ -10,13 +10,15 @@
 <ion-content>
   <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()">
     <ion-grid>
-      <ion-item *ngIf="!base64Image && initialPictureURL | async as initialPictureURL">
-        <img *ngIf="initialPictureURL.res && !initialPictureURL.loading" [src]="initialPictureURL.res" />
-        <ion-spinner *ngIf="initialPictureURL.loading" name="lines" class="fixed-center"></ion-spinner>
+      <ion-grid *ngIf="!base64Image && initialPictureURL | async as initialPictureURL"
+        style="height: 275px; max-width: 300px; border: grey 2px solid; border-radius: 5px; display: flex; justify-content: center; align-items: center;"
+        class="ion-text-center">
+        <img *ngIf="initialPictureURL.res && !initialPictureURL.loading" [src]="initialPictureURL.res"
+          style="width: 100%; height: 100%; object-fit: cover;" />
         <p class="ion-text-center" *ngIf="!initialPictureURL.res && !initialPictureURL.loading">You have not set a
           profile
           picture!</p>
-      </ion-item>
+      </ion-grid>
       <img *ngIf="base64Image" [src]="base64Image" />
       <ion-button class="ion-margin-vertical" expand="block" type="button" (click)="changeProfilePictureActionSheet()">
         Change Profile Picture</ion-button>
