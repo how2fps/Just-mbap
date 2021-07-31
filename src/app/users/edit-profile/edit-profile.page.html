@@ -10,6 +10,7 @@
 <ion-content>
   <form [formGroup]="editProfileForm" (ngSubmit)="onSubmit()">
     <ion-grid>
+
       <ion-grid *ngIf="!base64Image && initialPictureURL | async as initialPictureURL"
         style="height: 275px; max-width: 300px; border: grey 2px solid; border-radius: 5px; display: flex; justify-content: center; align-items: center;"
         class="ion-text-center">
@@ -19,9 +20,16 @@
           profile
           picture!</p>
       </ion-grid>
-      <img *ngIf="base64Image" [src]="base64Image" />
+
+      <ion-grid *ngIf="base64Image"
+        style="height: 275px; max-width: 300px; border: grey 2px solid; border-radius: 5px; display: flex; justify-content: center; align-items: center;"
+        class="ion-text-center">
+        <img [src]="base64Image" style="width: 100%; height: 100%; object-fit: cover;" />
+      </ion-grid>
+
       <ion-button class="ion-margin-vertical" expand="block" type="button" (click)="changeProfilePictureActionSheet()">
         Change Profile Picture</ion-button>
+
       <ion-row>
         <ion-col size="12">
           <ion-item>
