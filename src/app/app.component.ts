@@ -22,7 +22,9 @@ export class AppComponent implements OnInit {
     measurementId: 'G-7374TN4T25',
   };
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+    this.androidFetchWorkaround();
+  }
 
   ngOnInit() {
     if (!firebase.apps.length) {
@@ -39,5 +41,29 @@ export class AppComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+  androidFetchWorkaround() {
+    const originalFetch = (window as any).fetch;
+
+    (window as any).fetch = (...args) => {
+      const [url] = args;
+
+      if (typeof url === 'string' && url.match(/\.svg/)) {
+        return new Promise((resolve, reject) => {
+          const req = new XMLHttpRequest();
+          req.open('GET', url, true);
+          req.addEventListener('load', () => {
+            resolve({
+              ok: true,
+              text: () => Promise.resolve(req.responseText),
+            });
+          });
+          req.addEventListener('error', reject);
+          req.send();
+        });
+      } else {
+        return originalFetch(...args);
+      }
+    };
   }
 }
