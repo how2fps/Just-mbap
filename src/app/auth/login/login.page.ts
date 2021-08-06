@@ -50,6 +50,12 @@ export class LoginPage implements OnInit {
             .create({
               message: err.message,
               duration: 2000,
+              buttons: [
+                {
+                  text: 'X',
+                  role: 'cancel',
+                },
+              ],
             })
             .then((toast) => toast.present());
         });
@@ -57,7 +63,15 @@ export class LoginPage implements OnInit {
   }
 
   loginWithGoogle() {
-    this.authService.loginWithGoogle();
+    let loading: HTMLIonLoadingElement;
+    this.loadingController
+      .create()
+      .then((loader) => {
+        loading = loader;
+        loading.present();
+        this.authService.loginWithGoogle();
+      })
+      .then(() => loading.dismiss());
   }
 
   goToSignUp() {

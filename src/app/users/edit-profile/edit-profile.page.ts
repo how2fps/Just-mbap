@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import {
   ActionSheetController,
   LoadingController,
+  NavController,
   ToastController,
 } from '@ionic/angular';
 import { combineLatest, Observable, of } from 'rxjs';
@@ -15,6 +16,7 @@ import {
   map,
   switchMap,
   startWith,
+  delay,
 } from 'rxjs/operators';
 import { UserService } from '../user.service';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
@@ -31,6 +33,7 @@ export class EditProfilePage implements OnInit {
   base64Image: string;
   downloadURL: Observable<string>;
   initialPictureURL: Observable<any>;
+  hasCamera: boolean;
 
   constructor(
     private userService: UserService,
@@ -39,10 +42,12 @@ export class EditProfilePage implements OnInit {
     private router: Router,
     private camera: Camera,
     private storage: AngularFireStorage,
-    private actionSheetController: ActionSheetController
+    private actionSheetController: ActionSheetController,
+    private navCtrl: NavController
   ) {}
 
   ngOnInit() {
+    this.hasCamera = navigator.hasOwnProperty('camera');
     this.initForm();
     this.initialPictureURL = this.userService.getUserDetailsOnce$().pipe(
       tap((userDetails) => {
@@ -62,6 +67,7 @@ export class EditProfilePage implements OnInit {
       catchError(() => of({ res: null, loading: false }))
     );
   }
+
   async changeProfilePictureActionSheet() {
     const actionSheet = await this.actionSheetController.create({
       header: 'Change profile picture through: ',
@@ -88,6 +94,7 @@ export class EditProfilePage implements OnInit {
       status: new FormControl(''),
     });
   }
+
   takeProfilePicture(sourceType: number) {
     const options: CameraOptions = {
       quality: 100,
@@ -100,19 +107,19 @@ export class EditProfilePage implements OnInit {
       this.base64Image = 'data:image/jpeg;base64,' + imageData;
     });
   }
+
   savePicture() {
     const file: any = this.base64ToImage(this.base64Image);
     const filePath = `Images/${this.userId}`;
     const fileRef = this.storage.ref(filePath);
-
-    const task = this.storage.upload(`Images/${this.userId}`, file);
+    const task = this.storage.upload(filePath, file);
     return task.snapshotChanges().pipe(
       finalize(() => {
         this.downloadURL = fileRef.getDownloadURL();
-        this.downloadURL.subscribe();
       })
     );
   }
+
   base64ToImage(dataURI) {
     const fileDate = dataURI.split(',');
     const byteString = atob(fileDate[1]);
@@ -147,13 +154,19 @@ export class EditProfilePage implements OnInit {
       ])
         .pipe(
           tap(() => {
-            this.editProfileForm.reset();
             loader.dismiss();
-            this.router.navigate(['/tabs', 'profile']);
+            this.editProfileForm.reset();
+            this.navCtrl.navigateRoot(['']);
             this.toastController
               .create({
                 message: 'Details successfully edited.',
                 duration: 2000,
+                buttons: [
+                  {
+                    text: 'X',
+                    role: 'cancel',
+                  },
+                ],
               })
               .then((toast) => toast.present());
           }),
@@ -163,6 +176,12 @@ export class EditProfilePage implements OnInit {
               .create({
                 message: err.message,
                 duration: 2000,
+                buttons: [
+                  {
+                    text: 'X',
+                    role: 'cancel',
+                  },
+                ],
               })
               .then((toast) => toast.present());
             return of(null);

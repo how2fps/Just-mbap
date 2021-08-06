@@ -51,6 +51,12 @@ export class SignUpPage implements OnInit {
             .create({
               message: err.message,
               duration: 2000,
+              buttons: [
+                {
+                  text: 'X',
+                  role: 'cancel',
+                },
+              ],
             })
             .then((toast) => toast.present());
         });

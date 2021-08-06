@@ -59,6 +59,12 @@ export class FriendsPage implements OnInit, OnDestroy {
                 friendDisplayName +
                 ' from your friend list.',
               duration: 2000,
+              buttons: [
+                {
+                  text: 'X',
+                  role: 'cancel',
+                },
+              ],
             })
             .then((toast) => toast.present());
         })

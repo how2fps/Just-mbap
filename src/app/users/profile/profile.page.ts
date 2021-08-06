@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
@@ -34,7 +34,7 @@ export class ProfilePage {
       }),
       map((res) => ({ res, loading: false })),
       startWith({ res: undefined, loading: true }),
-      catchError((err) => of({ res: undefined, loading: false }))
+      catchError(() => of({ res: undefined, loading: false }))
     );
   }
 

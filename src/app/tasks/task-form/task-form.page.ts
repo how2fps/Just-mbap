@@ -86,6 +86,12 @@ export class TaskFormPage implements OnInit {
           .create({
             message: 'Task on ' + taskDate + ' created.',
             duration: 2000,
+            buttons: [
+              {
+                text: 'X',
+                role: 'cancel',
+              },
+            ],
           })
           .then((toast) => toast.present());
       });

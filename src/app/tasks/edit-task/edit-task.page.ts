@@ -97,7 +97,11 @@ export class EditTaskPage implements OnInit {
           visibleToFriends: formValues.visibleToFriends,
           currentTask: this.currentTask,
         };
-        return this.taskService.editTask(this.taskDocId, updatedTask, this.currentTask);
+        return this.taskService.editTask(
+          this.taskDocId,
+          updatedTask,
+          this.currentTask
+        );
       })
       .then(() => {
         this.router.navigate(['']);
@@ -106,6 +110,12 @@ export class EditTaskPage implements OnInit {
           .create({
             message: 'Task updated.',
             duration: 2000,
+            buttons: [
+              {
+                text: 'X',
+                role: 'cancel',
+              },
+            ],
           })
           .then((toast) => toast.present());
       });

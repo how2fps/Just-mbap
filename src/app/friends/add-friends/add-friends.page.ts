@@ -56,6 +56,12 @@ export class AddFriendsPage implements OnInit, OnDestroy {
             .create({
               message: 'Accepted friend request from ' + displayName + '.',
               duration: 2000,
+              buttons: [
+                {
+                  text: 'X',
+                  role: 'cancel',
+                },
+              ],
             })
             .then((toast) => toast.present());
         })
@@ -75,6 +81,12 @@ export class AddFriendsPage implements OnInit, OnDestroy {
             .create({
               message: 'Declined friend request from ' + displayName + '.',
               duration: 2000,
+              buttons: [
+                {
+                  text: 'X',
+                  role: 'cancel',
+                },
+              ],
             })
             .then((toast) => toast.present());
         })
@@ -104,6 +116,12 @@ export class AddFriendsPage implements OnInit, OnDestroy {
               .create({
                 message,
                 duration: 2000,
+                buttons: [
+                  {
+                    text: 'X',
+                    role: 'cancel',
+                  },
+                ],
               })
               .then((toast) => toast.present());
           })
