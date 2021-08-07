@@ -14,13 +14,12 @@ import { TaskService } from '../task.service';
   templateUrl: 'current-task.page.html',
   styleUrls: ['current-task.page.scss'],
 })
-export class CurrentTaskPage implements OnInit, OnDestroy {
+export class CurrentTaskPage {
   taskDetails: Task;
   timeAllocated: number;
   taskDoc: AngularFirestoreDocument<Task>;
   timerRunning = false;
   stopTimer$ = new Subject();
-  forceUpdateSub: Subscription;
   isLoading = true;
   constructor(
     private router: Router,
@@ -36,9 +35,9 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
     window.localStorage.setItem('taskId', this.taskDetails.id);
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.isLoading = true;
-    this.forceUpdateSub = this.taskService.forceUpdate$
+    this.taskService.forceUpdate$
       .pipe(
         switchMap((initialTaskId) => {
           if (initialTaskId) {
@@ -93,10 +92,6 @@ export class CurrentTaskPage implements OnInit, OnDestroy {
         })
       )
       .subscribe(() => (this.isLoading = false));
-  }
-
-  ngOnDestroy() {
-    this.forceUpdateSub.unsubscribe();
   }
 
   startTimer() {

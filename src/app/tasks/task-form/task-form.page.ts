@@ -27,10 +27,14 @@ export class TaskFormPage implements OnInit {
       .pipe(
         distinctUntilChanged(),
         tap((currentDate) => {
-          this.selectedDate = currentDate;
-          let date = currentDate.getUTCDate().toString();
-          const year = currentDate.getFullYear().toString();
-          let month = (currentDate.getUTCMonth() + 1).toString();
+          if (currentDate === 'all') {
+            this.selectedDate = new Date(Date.now());
+          } else {
+            this.selectedDate = currentDate;
+          }
+          let date = this.selectedDate.getUTCDate().toString();
+          const year = this.selectedDate.getFullYear().toString();
+          let month = (this.selectedDate.getUTCMonth() + 1).toString();
           if (Number(month) < 10) {
             month = '0' + month;
           }

@@ -20,15 +20,18 @@
     </ion-row>
   </ion-grid>
   <ion-button type="button" expand="block" [routerLink]="['/create']" class="ion-text-start">
-    New Task
+    New task
+  </ion-button>
+  <ion-button type="button" expand="block" (click)="getAllTasks()" class="ion-text-start">
+    Get every task
   </ion-button>
   <ion-button type="button" expand="block" color="success" (click)="getRandomQuote()" class="ion-text-start">
     Get inspired!
   </ion-button>
   <ion-header>
     <ion-toolbar>
-      <ion-title size="large" class="ion-text-center">
-        Tasks for {{selectedDate}}
+      <ion-title class="ion-text-center">
+        {{allTasksMode ? 'All Tasks' : 'Tasks for ' + selectedDate}}
       </ion-title>
     </ion-toolbar>
   </ion-header>
@@ -38,6 +41,7 @@
         <ion-label>
           <h2>Title: {{task.title}}</h2>
           <p>Description: {{task.description}}</p>
+          <p *ngIf="allTasksMode">Date: {{task.date.seconds*1000 | date}}</p>
         </ion-label>
         <ion-badge [color]="task.currentTask ? 'light' : 'primary'">
           {{task.currentTask ? 'Active' : task.timeAllocated | time}}

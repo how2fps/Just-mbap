@@ -45,30 +45,32 @@ export class FriendsPage implements OnInit, OnDestroy {
     friendDocId: string,
     friendDisplayName: string
   ) {
-    this.friendsService
-      .deleteFriend(friendFriendId, friendDocId)
-      .pipe(
-        tap(() => {
-          this.friends = this.friends.filter(
-            (friend) => friend.friendId !== friendFriendId
-          );
-          this.toastController
-            .create({
-              message:
-                'You have removed ' +
-                friendDisplayName +
-                ' from your friend list.',
-              duration: 2000,
-              buttons: [
-                {
-                  text: 'X',
-                  role: 'cancel',
-                },
-              ],
-            })
-            .then((toast) => toast.present());
-        })
-      )
-      .subscribe();
+    this.subscriptions.add(
+      this.friendsService
+        .deleteFriend(friendFriendId, friendDocId)
+        .pipe(
+          tap(() => {
+            this.friends = this.friends.filter(
+              (friend) => friend.friendId !== friendFriendId
+            );
+            this.toastController
+              .create({
+                message:
+                  'You have removed ' +
+                  friendDisplayName +
+                  ' from your friend list.',
+                duration: 2000,
+                buttons: [
+                  {
+                    text: 'X',
+                    role: 'cancel',
+                  },
+                ],
+              })
+              .then((toast) => toast.present());
+          })
+        )
+        .subscribe()
+    );
   }
 }

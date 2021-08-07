@@ -111,7 +111,6 @@ export class AuthService {
     const uid = userDetails.uid;
     const email = userDetails.email;
     const displayName = userDetails.displayName;
-    console.log('uid', uid);
     const uidExists = await this.afs
       .collection('users')
       .doc(uid)

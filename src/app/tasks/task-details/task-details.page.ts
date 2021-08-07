@@ -46,23 +46,24 @@ export class TaskDetailsPage implements OnInit {
 
   setCurrentTask() {
     this.taskService.updateTaskToCurrent(this.taskDetails.id).subscribe(() => {
+      if (window.localStorage.getItem('timerRunning') === 'true') {
+        const taskId = window.localStorage.getItem('taskId');
+        const timeAllocated = Number(
+          window.localStorage.getItem('timeAllocated')
+        );
+        const timeOnLeave = Number(window.localStorage.getItem('timeOnLeave'));
+        const timeNeededToSubtract = Math.floor(
+          (Date.now() - timeOnLeave) / 1000
+        );
+        const updatedTime = timeAllocated - timeNeededToSubtract;
+        this.currentActiveTaskDoc = this.afs
+          .collection('tasks')
+          .doc<Task>(taskId);
+        this.taskService.updateTime(updatedTime, this.currentActiveTaskDoc);
+        window.localStorage.clear();
+      }
+      this.taskService.forceUpdate$.next(this.taskDetails.id);
       this.router.navigate(['/tabs', 'current']);
     });
-    if (window.localStorage.getItem('timerRunning') === 'true') {
-      const taskId = window.localStorage.getItem('taskId');
-      const timeAllocated = Number(
-        window.localStorage.getItem('timeAllocated')
-      );
-      const timeOnLeave = Number(window.localStorage.getItem('timeOnLeave'));
-      const timeNeededToSubtract = Math.floor(
-        (Date.now() - timeOnLeave) / 1000
-      );
-      const updatedTime = timeAllocated - timeNeededToSubtract;
-      this.currentActiveTaskDoc = this.afs
-        .collection('tasks')
-        .doc<Task>(taskId);
-      this.taskService.updateTime(updatedTime, this.currentActiveTaskDoc);
-    }
-    this.taskService.forceUpdate$.next(this.taskDetails.id);
   }
 }

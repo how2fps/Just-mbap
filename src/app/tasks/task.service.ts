@@ -16,7 +16,7 @@ import { UserService } from '../users/user.service';
   providedIn: 'root',
 })
 export class TaskService {
-  currentDate$ = new BehaviorSubject<Date>(new Date());
+  currentDate$ = new BehaviorSubject<Date | 'all'>(new Date());
   forceUpdate$ = new BehaviorSubject('');
   taskDetails$ = new BehaviorSubject<Task | null>(null);
   private tasksCollection: AngularFirestoreCollection<Task>;
@@ -35,6 +35,28 @@ export class TaskService {
       switchMap((userID) => {
         this.tasksCollection = this.afs.collection<Task>('tasks', (ref) =>
           ref.where('userID', '==', userID).where('date', '==', date)
+        );
+        return this.tasksCollection.snapshotChanges().pipe(
+          map((actions) =>
+            actions.map((a) => {
+              const data = a.payload.doc.data() as Task;
+              const id = a.payload.doc.id;
+              return { id, ...data };
+            })
+          )
+        );
+      })
+    );
+  }
+
+  getAllTasks() {
+    this.tasksCollection = this.afs.collection<Task>('tasks');
+    return this.authService.currentUser$.pipe(
+      filter((user) => user !== null),
+      map((user) => user.uid),
+      switchMap((userID) => {
+        this.tasksCollection = this.afs.collection<Task>('tasks', (ref) =>
+          ref.where('userID', '==', userID)
         );
         return this.tasksCollection.snapshotChanges().pipe(
           map((actions) =>
@@ -113,7 +135,7 @@ export class TaskService {
                   .doc<Task>(taskToCurrentId)
                   .update({ currentTask: true })
               )
-              .catch((err) => console.log(err));
+              .catch();
           }
         });
       })
@@ -179,8 +201,8 @@ export class TaskService {
         currentStreak = streakData.currentStreak;
         highestStreak = streakData.highestStreak;
         userDocId = streakData.userDocId;
-        latestStreak = currentStreak + 1;
         if (updatedDateOfTask >= currentDateInSeconds) {
+          latestStreak = currentStreak + 1;
           return this.afs
             .collection('users')
             .doc(userDocId)
@@ -206,8 +228,6 @@ export class TaskService {
   }
 
   editTask(taskDocId: string, updatedTaskDetails: Task, currentTask: boolean) {
-    console.log(taskDocId);
-    console.log(updatedTaskDetails);
     if (currentTask) {
       window.localStorage.clear();
     }
@@ -215,6 +235,7 @@ export class TaskService {
       this.afs.collection('tasks').doc(taskDocId).update(updatedTaskDetails)
     );
   }
+
   deleteTask(taskDocId: string) {
     return from(this.afs.collection('tasks').doc(taskDocId).delete());
   }

@@ -21,6 +21,7 @@ export class AllTasksPage {
   });
   tasks$: Observable<Task[]>;
   currentDateSub: Subscription;
+  allTasksMode: boolean;
   currentDate = new Date();
 
   constructor(
@@ -29,8 +30,19 @@ export class AllTasksPage {
     private toastController: ToastController
   ) {
     this.tasks$ = this.taskService.currentDate$.pipe(
-      switchMap((date) => this.taskService.getTasksByDate(date))
+      switchMap((date) => {
+        if (date === 'all') {
+          return this.taskService.getAllTasks();
+        } else {
+          return this.taskService.getTasksByDate(date);
+        }
+      })
     );
+  }
+
+  getAllTasks() {
+    this.allTasksMode = true;
+    this.taskService.currentDate$.next('all');
   }
 
   onViewTitleChanged(title) {
@@ -38,11 +50,11 @@ export class AllTasksPage {
   }
 
   onTimeSelected(ev) {
+    this.allTasksMode = false;
     this.selectedDate = ev.selectedTime.toLocaleDateString('en-US', {
       day: 'numeric',
       month: 'long',
     });
-
     this.taskService.currentDate$.next(ev.selectedTime);
   }
 
@@ -53,9 +65,9 @@ export class AllTasksPage {
   editTask(taskDocId: string) {
     this.router.navigate(['/edit-task', taskDocId]);
   }
+
   deleteTask(taskDocId: string) {
-    console.log('ugud?');
-    this.taskService.deleteTask(taskDocId).pipe(tap(() => {}));
+    this.taskService.deleteTask(taskDocId).subscribe();
   }
 
   getRandomQuote() {

@@ -35,7 +35,6 @@ export class SignUpPage implements OnInit {
   onSubmit() {
     this.loadingController.create().then((loader) => {
       loader.present();
-      console.log(this.signUpForm.value);
       const email = this.signUpForm.value.email;
       const password = this.signUpForm.value.password;
       this.authService
